@@ -14,6 +14,6 @@ type WebSetting struct {
 	EnterpriseEmail string    `json:"enterprise_email" xorm:"not null comment('企业邮箱') VARCHAR(255)"`
 	Hotline         string    `json:"hotline" xorm:"not null comment('服务热线') VARCHAR(32)"`
 	Icp             string    `json:"icp" xorm:"not null comment('网站ICP备案号') VARCHAR(32)"`
-	SaveTime        time.Time `json:"save_time" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
-	UpdateTime      time.Time `json:"update_time" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
+	SaveTime        time.Time `json:"_" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
+	UpdateTime      time.Time `json:"_" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
 }

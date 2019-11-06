@@ -17,6 +17,6 @@ type Product struct {
 	Heat          int       `json:"heat" xorm:"not null comment('热度') INT(11)"`
 	CategoryId    int       `json:"category_id" xorm:"not null comment('类目id') INT(11)"`
 	AuthorId      int       `json:"author_id" xorm:"not null comment('作者id') INT(11)"`
-	UpdateTime    time.Time `json:"update_time" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
-	SaveTime      time.Time `json:"save_time" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
+	UpdateTime    time.Time `json:"_" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
+	SaveTime      time.Time `json:"_" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
 }

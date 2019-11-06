@@ -15,6 +15,6 @@ type Ad struct {
 	Weight     int       `json:"weight" xorm:"not null default 0 comment('权重用于排序，数值越大权重越大') INT(11)"`
 	StartTime  time.Time `json:"start_time" xorm:"not null TIMESTAMP"`
 	EndTime    time.Time `json:"end_time" xorm:"not null TIMESTAMP"`
-	SaveTime   time.Time `json:"save_time" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
-	UpdateTime time.Time `json:"update_time" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
+	SaveTime   time.Time `json:"_" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
+	UpdateTime time.Time `json:"_" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
 }
