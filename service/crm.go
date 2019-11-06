@@ -33,3 +33,15 @@ func (c *CrmServer) ListCrm(query *entity.CrmListReq) (crms []*gen.Crm, total in
 	total, err = session.Where(cond).Asc("save_time").Limit(query.Page.PageSize, query.Page.DbPageIndex()).FindAndCount(&crms)
 	return
 }
+
+func (c *CrmServer) DeleteCrmById(id int64) (ok bool, err error) {
+	i, err := mysql.Db.ID(id).Cols("deleted").Update(&gen.Crm{
+		Deleted: 1,
+	})
+	if i > 0 {
+		ok = true
+	} else {
+		//TODO
+	}
+	return
+}

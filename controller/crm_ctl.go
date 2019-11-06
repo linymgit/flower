@@ -2,6 +2,7 @@ package controller
 
 import (
 	"flower/entity"
+	"flower/handler"
 	"flower/http"
 	"flower/result"
 	"flower/router"
@@ -19,9 +20,19 @@ func init() {
 		"/admin/crm/list",
 		http.POST,
 		crm.ListCrm,
+		handler.CheckAdmin,
 	)
+
+	router.AddRoute(
+		"/admin/crm/delete",
+		http.POST,
+		crm.DeleteCrmById,
+		handler.CheckAdmin,
+	)
+
 }
 
+// 获取客户列表
 func (c *Crm) ListCrm(ctx *fasthttp.RequestCtx, req *entity.CrmListReq) (resp *result.Result) {
 	if req.BeginTime > req.EndTime {
 		resp = result.NewError(result.RequestParamEc, "开始时间大于结束时间")
@@ -42,5 +53,16 @@ func (c *Crm) ListCrm(ctx *fasthttp.RequestCtx, req *entity.CrmListReq) (resp *r
 			},
 			Crms: crms,
 		})
+	return
+}
+
+//根据id删除客户信息 逻辑上删除物理并无删除
+func (c *Crm) DeleteCrmById(ctx *fasthttp.RequestCtx, req *entity.CrmDeleteReq) (resp *result.Result) {
+	ok, err := service.CrmSrv.DeleteCrmById(req.Id)
+	if err != nil {
+		resp = result.DatabaseError
+		return
+	}
+	resp = result.NewSuccess(ok)
 	return
 }
