@@ -11,6 +11,7 @@ const (
 	UnauthorizedEc      = -1005 // 未登陆
 	InvalidTokenEc      = -1006 // 非法或过期的token
 	PasswordUnchangedEc = -1007 // 密码和之前设置一样
+	RequestParamEc      = -1008 // 参数有误
 )
 
 var (

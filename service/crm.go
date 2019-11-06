@@ -1,0 +1,35 @@
+package service
+
+import (
+	"flower/entity"
+	"flower/entity/gen"
+	"flower/mysql"
+	"time"
+	"xorm.io/builder"
+)
+
+var timeTemplate = "2006-01-02 15:04:05" //常规类型
+
+var CrmSrv = &CrmServer{}
+
+type CrmServer struct {
+}
+
+func (c *CrmServer) ListCrm(query *entity.CrmListReq) (crms []*gen.Crm, total int64, err error) {
+	crms = make([]*gen.Crm, 0)
+	cond := builder.NewCond()
+	cond = cond.And(builder.Eq{"deleted": 0})
+	if query.Name != "" {
+		cond = cond.And(builder.Eq{"name": &query.Name})
+	}
+	if query.EndTime > 0 && query.BeginTime > 0 {
+		begin := time.Unix(query.BeginTime, 0).Add(-24 * time.Hour).Format(timeTemplate)
+		end := time.Unix(query.BeginTime, 0).Add(24 * time.Hour).Format(timeTemplate)
+		cond = cond.And(builder.Lt{"save_time": &end})
+		cond = cond.And(builder.Gt{"save_time": &begin})
+	}
+	session := mysql.Db.NewSession()
+	defer session.Close()
+	total, err = session.Where(cond).Asc("save_time").Limit(query.Page.PageSize, query.Page.DbPageIndex()).FindAndCount(&crms)
+	return
+}
