@@ -3,6 +3,7 @@ package service
 import (
 	"flower/entity"
 	"flower/entity/gen"
+	"flower/entity/state"
 	"flower/mysql"
 	"time"
 	"xorm.io/builder"
@@ -18,7 +19,7 @@ type CrmServer struct {
 func (c *CrmServer) ListCrm(query *entity.CrmListReq) (crms []*gen.Crm, total int64, err error) {
 	crms = make([]*gen.Crm, 0)
 	cond := builder.NewCond()
-	cond = cond.And(builder.Eq{"deleted": 0})
+	cond = cond.And(builder.Eq{"deleted": state.CrmNormal})
 	if query.Name != "" {
 		cond = cond.And(builder.Eq{"name": &query.Name})
 	}
@@ -36,7 +37,7 @@ func (c *CrmServer) ListCrm(query *entity.CrmListReq) (crms []*gen.Crm, total in
 
 func (c *CrmServer) DeleteCrmById(id int64) (ok bool, err error) {
 	i, err := mysql.Db.ID(id).Cols("deleted").Update(&gen.Crm{
-		Deleted: 1,
+		Deleted: state.CrmDeleted,
 	})
 	if i > 0 {
 		ok = true
