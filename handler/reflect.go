@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/valyala/fasthttp"
 	"reflect"
+	"strconv"
 	"unsafe"
 )
 
@@ -51,6 +52,22 @@ func FillFieldValueByQueryArgs(args *fasthttp.Args, in reflect.Type) (rValue ref
 			switch field.Type.Kind() {
 			case reflect.String:
 				*((*string)(unsafe.Pointer(fieldPtr))) = string(fV)
+			case reflect.Int64:
+				atoi, err := strconv.ParseInt(string(fV), 10, 64)
+				if err != nil {
+					ok = false
+					return
+				}
+				*((*int64)(unsafe.Pointer(fieldPtr))) = atoi
+			case reflect.Int:
+				atoi, err := strconv.Atoi(string(fV))
+				if err != nil {
+					ok = false
+					return
+				}
+				*((*int)(unsafe.Pointer(fieldPtr))) = atoi
+			default:
+				ok = false
 			}
 		}
 	}

@@ -25,7 +25,7 @@ func (c *CrmServer) ListCrm(query *entity.CrmListReq) (crms []*gen.Crm, total in
 	}
 	if query.EndTime > 0 && query.BeginTime > 0 {
 		begin := time.Unix(query.BeginTime, 0).Add(-24 * time.Hour).Format(timeTemplate)
-		end := time.Unix(query.BeginTime, 0).Add(24 * time.Hour).Format(timeTemplate)
+		end := time.Unix(query.EndTime, 0).Add(24 * time.Hour).Format(timeTemplate)
 		cond = cond.And(builder.Lt{"save_time": &end})
 		cond = cond.And(builder.Gt{"save_time": &begin})
 	}

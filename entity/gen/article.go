@@ -17,7 +17,7 @@ type Article struct {
 	Content    string    `json:"content" xorm:"not null TEXT"`
 	Clicks     int       `json:"clicks" xorm:"not null index INT(11)"`
 	States     int       `json:"states" xorm:"not null TINYINT(4)"`
-	Weight     int       `json:"weight" xorm:"not null INT(11)"`
+	Sort       int       `json:"sort" xorm:"not null INT(11)"`
 	SaveTime   time.Time `json:"_" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
 	UpdateTime time.Time `json:"_" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
 }

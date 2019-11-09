@@ -52,7 +52,7 @@ func (a *Auth) Login(ctx *fasthttp.RequestCtx, req *entity.LoginReq) (resp *resu
 		resp = result.AcountError
 		return
 	}
-	tokenString, err := jwt.GenJwt(map[string]interface{}{http.JwtIdKey: account.Id, http.JwtRoleId: account.RoleId, http.JwtExp: time.Now().Add(10 * time.Minute).Unix()})
+	tokenString, err := jwt.GenJwt(map[string]interface{}{http.JwtIdKey: account.Id, http.JwtRoleId: account.RoleId, http.JwtExp: time.Now().Add(100 * time.Minute).Unix()})
 	if err != nil {
 		// TODO
 	}

@@ -10,6 +10,7 @@ type Ad struct {
 	PicUrl     string    `json:"pic_url" xorm:"not null default '0' VARCHAR(255)"`
 	PostionId  int       `json:"postion_id" xorm:"not null default 0 comment('广告位置') INT(11)"`
 	GotoType   int       `json:"goto_type" xorm:"not null default 0 comment('跳转类型 0:url 1:to product') TINYINT(4)"`
+	AdLink     string    `json:"ad_link" xorm:"not null default '0' comment('广告链接') VARCHAR(255)"`
 	State      int       `json:"state" xorm:"not null default 0 comment('0在线 1下线') TINYINT(4)"`
 	Clicks     int       `json:"clicks" xorm:"not null default 0 comment('点击数') INT(11)"`
 	Weight     int       `json:"weight" xorm:"not null default 0 comment('权重用于排序，数值越大权重越大') INT(11)"`
