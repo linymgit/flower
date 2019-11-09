@@ -2,6 +2,7 @@ package controller
 
 import (
 	"flower/entity"
+	"flower/handler"
 	"flower/http"
 	"flower/result"
 	"flower/router"
@@ -22,21 +23,21 @@ func init() {
 		"/admin/article/category/new",
 		http.POST,
 		ac.NewArticleType,
-		//handler.CheckAdmin,
+		handler.CheckAdmin,
 	)
 
 	router.AddRoute(
 		"/admin/article/category/tree",
 		http.GET,
 		ac.GetActicleCategoryTree,
-		//handler.CheckAdmin,
+		handler.CheckAdmin,
 	)
 
 	router.AddRoute(
 		"/admin/article/category/list",
 		http.GET,
 		ac.ListArticleType,
-		//handler.CheckAdmin,
+		handler.CheckAdmin,
 	)
 
 	//编辑文章分类
@@ -44,7 +45,7 @@ func init() {
 		"/admin/article/category/edit",
 		http.POST,
 		ac.EditArticleType,
-		//handler.CheckAdmin,
+		handler.CheckAdmin,
 	)
 
 	// --------------文章--------------------
@@ -52,14 +53,14 @@ func init() {
 		"/admin/article/new",
 		http.POST,
 		ac.NewArticle,
-		//handler.CheckAdmin,
+		handler.CheckAdmin,
 	)
 
 	router.AddRoute(
 		"/admin/article/list",
 		http.GET,
 		ac.ListArticle,
-		//handler.CheckAdmin,
+		handler.CheckAdmin,
 	)
 }
 

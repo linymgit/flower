@@ -2,6 +2,7 @@ package controller
 
 import (
 	"flower/entity"
+	"flower/handler"
 	"flower/http"
 	"flower/result"
 	"flower/router"
@@ -18,21 +19,21 @@ func init() {
 		"/admin/sys/setting/new",
 		http.POST,
 		ss.NewSetting,
-		//handler.CheckAdmin,
+		handler.CheckAdmin,
 	)
 
 	router.AddRoute(
 		"/admin/sys/setting/modify",
 		http.POST,
 		ss.ModifySetting,
-		//handler.CheckAdmin,
+		handler.CheckAdmin,
 	)
 
 	router.AddRoute(
 		"/admin/sys/setting",
 		http.GET,
 		ss.GetSetting,
-		//handler.CheckAdmin,
+		handler.CheckAdmin,
 	)
 
 }
