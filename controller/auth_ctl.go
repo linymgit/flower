@@ -34,10 +34,13 @@ func init() {
 }
 
 func (a *Auth) Login(ctx *fasthttp.RequestCtx, req *entity.LoginReq) (resp *result.Result) {
-	verifyResult := captcha.VerifyCaptcha(req.Id, req.VerifyValue)
-	if !verifyResult {
-		resp = result.CaptchaError
-		return
+	captchaCheck := false
+	if captchaCheck {
+		verifyResult := captcha.VerifyCaptcha(req.Id, req.VerifyValue)
+		if !verifyResult {
+			resp = result.CaptchaError
+			return
+		}
 	}
 	exist, account, err := service.AccSrv.GetAccountByName(req.Name)
 	if err != nil {
