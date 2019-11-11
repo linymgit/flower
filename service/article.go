@@ -136,7 +136,7 @@ func (ac *ArticleService) EditArticle(query *entity.EditArticleTypeReq) (ok,exis
 	}else{
 		existParent = true
 	}
-	i, err := mysql.Db.Id(query.Id).Update(&gen.ArticleType{
+	i, err := mysql.Db.Id(query.Id).Cols("type_name","sort","level","parent_id").Update(&gen.ArticleType{
 		TypeName: query.TypeName,
 		Sort:     query.Sort,
 		Level:    level,

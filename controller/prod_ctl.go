@@ -20,7 +20,7 @@ func init() {
 		"/admin/product/category/list",
 		http.GET,
 		pc.ListProdCategory,
-		//handler.CheckAdmin,
+		handler.CheckAdmin,
 	)
 
 	router.AddRoute(
@@ -44,11 +44,21 @@ func init() {
 		handler.CheckAdmin,
 	)
 
+	// --------------商品--------------------
+
 	//新增商品
 	router.AddRoute(
 		"/admin/product/new",
 		http.POST,
 		pc.NewProduct,
+		handler.CheckAdmin,
+	)
+
+	//获取商品
+	router.AddRoute(
+		"/product/list",
+		http.POST,
+		pc.ListProduct,
 		handler.CheckAdmin,
 	)
 
@@ -136,5 +146,9 @@ func (pc *ProdCategory) NewProduct(ctx *fasthttp.RequestCtx, req *entity.NewProd
 		return
 	}
 	rsp = result.NewSuccess(&entity.NewProductRsp{ProductId: productId})
+	return
+}
+
+func (pc *ProdCategory) ListProduct(ctx *fasthttp.RequestCtx, req *entity.ListProductReq) (rsp *result.Result){
 	return
 }

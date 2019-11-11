@@ -36,22 +36,21 @@ type ProdCategoryTree struct {
 	Tree []*ProdCategoryVo `json:"tree"`
 }
 
-
 type ProdCategoryStateReq struct {
 	Id int `json:"id"`
 }
 
 type NewProductReq struct {
-	Name          string `json:"name" validate:"required"`
-	Intro         string `json:"intro" validate:"required"`
-	Summary       string `json:"summary" validate:"required"`
+	Name    string `json:"name" validate:"required"`
+	Intro   string `json:"intro" validate:"required"`
+	Summary string `json:"summary" validate:"required"`
 	//States        int    `json:"states"`
 	IndexShow     int    `json:"index_show" validate:"required"`
 	DetailsPicUrl string `json:"details_pic_url" validate:"required"`
 	CoverUrl      string `json:"cover_url" validate:"required"`
 	Price         string `json:"price"validate:"required"`
 	//Heat          int     `json:"heat"`
-	CategoryId int `json:"category_id" validate:"required"`
+	CategoryId int   `json:"category_id" validate:"required"`
 	AuthorId   int64 `json:"-"`
 }
 
@@ -59,3 +58,12 @@ type NewProductRsp struct {
 	ProductId int64 `json:"product_id"`
 }
 
+type ListProductReq struct {
+	Sort int `json:"sort"`
+	IsHot bool `json:"is_hot"` //热门
+	IsNew bool `json:"is_new"` //最新
+	Page *Page `json:"page" validate:"required"`
+}
+
+type ListProductRsp struct {
+}

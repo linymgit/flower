@@ -65,10 +65,13 @@ func (a *Auth) Login(ctx *fasthttp.RequestCtx, req *entity.LoginReq) (resp *resu
 }
 
 func (a *Auth) ModifyPassword(ctx *fasthttp.RequestCtx, req *entity.ModifyPasswordReq) (resp *result.Result) {
-	verifyResult := captcha.VerifyCaptcha(req.Id, req.VerifyValue)
-	if !verifyResult {
-		resp = result.CaptchaError
-		return
+	captchaCheck := false
+	if captchaCheck {
+		verifyResult := captcha.VerifyCaptcha(req.Id, req.VerifyValue)
+		if !verifyResult {
+			resp = result.CaptchaError
+			return
+		}
 	}
 	md5Pw := crypto.GetPasswordWithMd5(req.Password)
 	id, ok := http.GetJwtId(ctx)
