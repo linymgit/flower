@@ -24,3 +24,5 @@ const (
 	AdNormal int = iota
 	AdDeleted
 )
+
+const IndexShow = 1
