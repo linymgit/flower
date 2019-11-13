@@ -165,9 +165,13 @@ func (pc *ProdCategory) ModifyProcategory(ctx *fasthttp.RequestCtx, req *entity.
 }
 
 func (pc *ProdCategory) DeleteProcategory(ctx *fasthttp.RequestCtx, req *entity.DeleteProdCategoryReq) (rsp *result.Result) {
-	affected, err := service.ProdSrv.DeleteProcategoryById(req.Id)
+	isParent, affected, err := service.ProdSrv.DeleteProcategoryById(req.Id)
 	if err != nil {
 		rsp = result.DatabaseError
+		return
+	}
+	if isParent {
+		rsp = result.NewError(result.ParamEc, "是上级分类,要删除这个分类要先删除他的所有下级分类")
 		return
 	}
 	if affected != 1 {

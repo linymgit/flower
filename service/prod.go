@@ -181,7 +181,14 @@ func (p *ProdService) ModifyProcategory(query *entity.ModifyCategoryReq) (affect
 	return
 }
 
-func (p *ProdService) DeleteProcategoryById(id int)(affected int64, err error){
+func (p *ProdService) DeleteProcategoryById(id int)(isParent bool, affected int64, err error){
+	isParent, err = mysql.Db.Where("parent_id = ?", id).Cols("id").Exist(&gen.ProductCategory{})
+	if err != nil {
+		return
+	}
+	if isParent {
+		return
+	}
 	affected, err = mysql.Db.Id(id).Delete(&gen.ProductCategory{})
 	return
 }
