@@ -17,15 +17,15 @@ func init() {
 	ad := &Ad{}
 
 	router.AddRoute(
-		"/admin/ad",
+		"/admin/ad/new",
 		http.POST,
 		ad.NewGd,
 		handler.CheckAdmin,
 	)
 
 	router.AddRoute(
-		"/admin/ad",
-		http.GET,
+		"/admin/ad/get",
+		http.POST,
 		ad.GetGds,
 		handler.CheckAdmin,
 	)
@@ -51,11 +51,11 @@ func (ad *Ad) NewGd(ctx *fasthttp.RequestCtx, req *entity.NewAdReq) (rsp *result
 		rsp = result.DatabaseError
 		return
 	}
-	rsp = result.NewSuccess(&entity.NewAdRsp{AdId:adId})
+	rsp = result.NewSuccess(&entity.NewAdRsp{AdId: adId})
 	return
 }
 
-func (ad *Ad) GetGds(ctx *fasthttp.RequestCtx, req *entity.GetAdsReq ) (rsp *result.Result){
+func (ad *Ad) GetGds(ctx *fasthttp.RequestCtx, req *entity.GetAdsReq) (rsp *result.Result) {
 	ads, total, err := service.Adsrv.GetAds(req)
 	if err != nil {
 		rsp = result.DatabaseError
@@ -73,7 +73,7 @@ func (ad *Ad) GetGds(ctx *fasthttp.RequestCtx, req *entity.GetAdsReq ) (rsp *res
 	return
 }
 
-func (ad *Ad)  ChangeAdState(ctx *fasthttp.RequestCtx, req *entity.ChangeAdStateReq ) (rsp *result.Result){
+func (ad *Ad) ChangeAdState(ctx *fasthttp.RequestCtx, req *entity.ChangeAdStateReq) (rsp *result.Result) {
 	ok, err := service.Adsrv.ChangeAdState(req.Id)
 	if err != nil {
 		rsp = result.DatabaseError
@@ -83,7 +83,7 @@ func (ad *Ad)  ChangeAdState(ctx *fasthttp.RequestCtx, req *entity.ChangeAdState
 	return
 }
 
-func (ad *Ad)  DeleteAdById(ctx *fasthttp.RequestCtx, req *entity.ChangeAdStateReq ) (rsp *result.Result){
+func (ad *Ad) DeleteAdById(ctx *fasthttp.RequestCtx, req *entity.ChangeAdStateReq) (rsp *result.Result) {
 	ok, err := service.Adsrv.DeleteAd(req.Id)
 	if err != nil {
 		rsp = result.DatabaseError
