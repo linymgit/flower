@@ -48,14 +48,14 @@ func init() {
 		"/admin/product/category/modify",
 		http.POST,
 		pc.ModifyProcategory,
-		//handler.CheckAdmin,
+		handler.CheckAdmin,
 	)
 
 	router.AddRoute(
 		"/admin/product/category/delete",
 		http.POST,
 		pc.DeleteProcategory,
-		//handler.CheckAdmin,
+		handler.CheckAdmin,
 	)
 
 
@@ -66,7 +66,7 @@ func init() {
 		"/admin/product/new",
 		http.POST,
 		pc.NewProduct,
-		//handler.CheckAdmin,
+		handler.CheckAdmin,
 	)
 
 	//获取商品
@@ -74,7 +74,7 @@ func init() {
 		"/admin/product/list",
 		http.POST,
 		pc.ListProduct,
-		//handler.CheckAdmin,
+		handler.CheckAdmin,
 	)
 
 }
