@@ -24,7 +24,7 @@ func (p *ProdService) ListProductCategory(query *entity.ListProductCategoryReq) 
 		if err != nil {
 			//TODO
 		}
-	}else{
+	} else {
 		total, err = session.Where(builder.Eq{"parent_id": query.ParentId}).Asc("sort").Limit(query.Page.PageSize, query.Page.DbPageIndex()).FindAndCount(&pcs)
 		if err != nil {
 			//TODO
@@ -104,8 +104,8 @@ func (p *ProdService) NewProductCategory(query *entity.NewProdCategoryReq) (isEx
 			//TODO
 			return
 		}
-		level = query.ParentId+1
-	}else{
+		level = query.ParentId + 1
+	} else {
 		isExistParent = true
 	}
 	affected, err := mysql.Db.Cols("parent_id", "name", "desc", "states", "level", "sort").InsertOne(&gen.ProductCategory{
@@ -123,7 +123,7 @@ func (p *ProdService) NewProductCategory(query *entity.NewProdCategoryReq) (isEx
 	return
 }
 
-func (p *ProdService) ChangeProcategoryState(id int) (ok bool, err error){
+func (p *ProdService) ChangeProcategoryState(id int) (ok bool, err error) {
 	result, err := mysql.Db.Exec("	UPDATE `product_category` SET `states`=`states`^1 WHERE  `id`=?;", id)
 	if err != nil {
 		return
@@ -137,7 +137,7 @@ func (p *ProdService) ChangeProcategoryState(id int) (ok bool, err error){
 }
 
 func (p *ProdService) NewProduct(query *entity.NewProductReq) (ok bool, err error) {
-	i, err := mysql.Db.Cols("name", "states", "heat","intro", "summary", "index_show", "details_pic_url", "cover_url", "price", "category_id", "author_id").InsertOne(&gen.Product{
+	i, err := mysql.Db.Cols("name", "states", "heat", "intro", "summary", "index_show", "details_pic_url", "cover_url", "price", "category_id", "author_id").InsertOne(&gen.Product{
 		Name:          query.Name,
 		Intro:         query.Intro,
 		Summary:       query.Summary,
@@ -156,7 +156,7 @@ func (p *ProdService) NewProduct(query *entity.NewProductReq) (ok bool, err erro
 }
 
 func (p *ProdService) NewProductResutId(query *entity.NewProductReq) (productId int64, err error) {
-	result, err := mysql.Db.Exec("INSERT INTO `product` (`name`,`intro`,`summary`,`states`,`index_show`," +
+	result, err := mysql.Db.Exec("INSERT INTO `product` (`name`,`intro`,`summary`,`states`,`index_show`,"+
 		"`details_pic_url`,`cover_url`,`price`,`heat`,`category_id`,`author_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 		query.Name, query.Intro, query.Summary, state.ProdOnline, query.IndexShow, query.DetailsPicUrl, query.CoverUrl,
 		query.Price, 0, query.CategoryId, query.AuthorId)
@@ -172,16 +172,16 @@ func (p *ProdService) NewProductResutId(query *entity.NewProductReq) (productId 
 
 func (p *ProdService) ModifyProcategory(query *entity.ModifyCategoryReq) (affected int64, err error) {
 	affected, err = updateProcategory(&gen.ProductCategory{
-		Id:       query.Id,
-		Name:     query.Name,
-		Desc:     query.Desc,
-		States:   query.States,
-		Sort:     query.Sort,
-	}, "name", "desc","states", "sort")
+		Id:     query.Id,
+		Name:   query.Name,
+		Desc:   query.Desc,
+		States: query.States,
+		Sort:   query.Sort,
+	}, "name", "desc", "states", "sort")
 	return
 }
 
-func (p *ProdService) DeleteProcategoryById(id int)(isParent bool, affected int64, err error){
+func (p *ProdService) DeleteProcategoryById(id int) (isParent bool, affected int64, err error) {
 	isParent, err = mysql.Db.Where("parent_id = ?", id).Cols("id").Exist(&gen.ProductCategory{})
 	if err != nil {
 		return
@@ -193,15 +193,15 @@ func (p *ProdService) DeleteProcategoryById(id int)(isParent bool, affected int6
 	return
 }
 
-func (p *ProdService) ListProduct(query *entity.ListProductReq)(ps []*gen.Product, total int64, err error) {
+func (p *ProdService) ListProduct(query *entity.ListProductReq) (ps []*gen.Product, total int64, err error) {
 	ps = make([]*gen.Product, 0)
 	cond := builder.NewCond()
-	cond = cond.And(builder.Eq{"states": &query.States})
+	cond = cond.And(builder.Eq{"states": query.States})
 	if query.Name != "" {
-		cond = cond.And(builder.Eq{"name": &query.Name})
+		cond = cond.And(builder.Eq{"name": query.Name})
 	}
 	if query.CategoryId != 0 {
-		cond = cond.And(builder.Eq{"category_id": &query.CategoryId})
+		cond = cond.And(builder.Eq{"category_id": query.CategoryId})
 	}
 	session := mysql.Db.NewSession()
 	defer session.Close()
@@ -211,5 +211,19 @@ func (p *ProdService) ListProduct(query *entity.ListProductReq)(ps []*gen.Produc
 
 func updateProcategory(procategory *gen.ProductCategory, columns ...string) (affected int64, err error) {
 	affected, err = mysql.Db.Id(procategory.Id).Cols(columns...).Update(procategory)
+	return
+}
+
+func (p *ProdService) CategoryId2Name() (id2nameMap map[int]string, err error) {
+	rows, err := mysql.Db.Cols("id", "name").Rows(&gen.ProductCategory{})
+	bean := new(gen.ProductCategory)
+	id2nameMap = make(map[int]string)
+	for rows.Next() {
+		err = rows.Scan(bean)
+		if err != nil {
+			return
+		}
+		id2nameMap[bean.Id] = bean.Name
+	}
 	return
 }

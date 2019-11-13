@@ -19,4 +19,5 @@ type Product struct {
 	AuthorId      int64     `json:"author_id" xorm:"not null comment('作者id') BIGINT(20)"`
 	UpdateTime    time.Time `json:"-" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
 	SaveTime      time.Time `json:"-" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
+	CategoryName  string    `json:"category_name" xorm:"-"`
 }

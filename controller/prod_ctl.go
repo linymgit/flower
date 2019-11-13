@@ -58,7 +58,6 @@ func init() {
 		handler.CheckAdmin,
 	)
 
-
 	// --------------商品--------------------
 
 	//新增商品
@@ -97,7 +96,7 @@ func (pc *ProdCategory) ListProdCategory(ctx *fasthttp.RequestCtx, req *entity.L
 	resp = result.NewSuccess(
 		&entity.ListProductCategoryResp{
 			Page: page,
-			Pcs: pcs,
+			Pcs:  pcs,
 		})
 	return
 }
@@ -149,7 +148,6 @@ func (pc *ProdCategory) ChangeProcategoryState(ctx *fasthttp.RequestCtx, req *en
 	return
 }
 
-
 func (pc *ProdCategory) ModifyProcategory(ctx *fasthttp.RequestCtx, req *entity.ModifyCategoryReq) (rsp *result.Result) {
 	affected, err := service.ProdSrv.ModifyProcategory(req)
 	if err != nil {
@@ -199,11 +197,19 @@ func (pc *ProdCategory) NewProduct(ctx *fasthttp.RequestCtx, req *entity.NewProd
 	return
 }
 
-func (pc *ProdCategory) ListProduct(ctx *fasthttp.RequestCtx, req *entity.ListProductReq) (rsp *result.Result){
+func (pc *ProdCategory) ListProduct(ctx *fasthttp.RequestCtx, req *entity.ListProductReq) (rsp *result.Result) {
 	ps, total, err := service.ProdSrv.ListProduct(req)
 	if err != nil {
 		rsp = result.DatabaseError
 		return
+	}
+	id2nameMap, err := service.ProdSrv.CategoryId2Name()
+	if err != nil {
+		rsp = result.DatabaseError
+		return
+	}
+	for k := range ps {
+		ps[k].CategoryName = id2nameMap[ps[k].CategoryId]
 	}
 	rsp = result.NewSuccess(
 		&entity.ListProductRsp{
