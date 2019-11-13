@@ -89,7 +89,7 @@ func (p *ProdService) NewProductCategory(query *entity.NewProdCategoryReq) (isEx
 	p.m.Lock()
 	defer p.m.Unlock()
 	// 分类名称唯一校验
-	isExistName, err = mysql.Db.Where("name = ?", query.Name).Exist(&gen.ProductCategory{})
+	isExistName, err = mysql.Db.Where("name = ?", query.Name).Cols("id").Exist(&gen.ProductCategory{})
 	if err != nil {
 		return
 	}
