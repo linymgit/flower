@@ -12,6 +12,6 @@ type ProductCategory struct {
 	States     int       `json:"states" xorm:"not null comment('0显示 1不显示') TINYINT(4)"`
 	Level      int       `json:"level" xorm:"not null comment('类目级别') INT(11)"`
 	Sort       int       `json:"sort" xorm:"not null INT(11)"`
-	SaveTime   time.Time `json:"_" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
-	UpdateTime time.Time `json:"_" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
+	SaveTime   time.Time `json:"-" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
+	UpdateTime time.Time `json:"-" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
 }

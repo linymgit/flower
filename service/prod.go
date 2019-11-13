@@ -169,3 +169,40 @@ func (p *ProdService) NewProductResutId(query *entity.NewProductReq) (productId 
 	}
 	return
 }
+
+func (p *ProdService) ModifyProcategory(query *entity.ModifyCategoryReq) (affected int64, err error) {
+	affected, err = updateProcategory(&gen.ProductCategory{
+		Id:       query.Id,
+		Name:     query.Name,
+		Desc:     query.Desc,
+		States:   query.States,
+		Sort:     query.Sort,
+	}, "name", "desc","states", "sort")
+	return
+}
+
+func (p *ProdService) DeleteProcategoryById(id int)(affected int64, err error){
+	affected, err = mysql.Db.Id(id).Delete(&gen.ProductCategory{})
+	return
+}
+
+func (p *ProdService) ListProduct(query *entity.ListProductReq)(ps []*gen.Product, total int64, err error) {
+	ps = make([]*gen.Product, 0)
+	cond := builder.NewCond()
+	cond = cond.And(builder.Eq{"states": &query.States})
+	if query.Name != "" {
+		cond = cond.And(builder.Eq{"name": &query.Name})
+	}
+	if query.CategoryId != 0 {
+		cond = cond.And(builder.Eq{"category_id": &query.CategoryId})
+	}
+	session := mysql.Db.NewSession()
+	defer session.Close()
+	total, err = session.Where(cond).Asc("save_time").Limit(query.Page.PageSize, query.Page.DbPageIndex()).FindAndCount(&ps)
+	return
+}
+
+func updateProcategory(procategory *gen.ProductCategory, columns ...string) (affected int64, err error) {
+	affected, err = mysql.Db.Id(procategory.Id).Cols(columns...).Update(procategory)
+	return
+}

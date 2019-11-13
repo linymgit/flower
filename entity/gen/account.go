@@ -10,6 +10,6 @@ type Account struct {
 	Name       string    `json:"name" xorm:"not null default '0' unique VARCHAR(50)"`
 	Password   string    `json:"password" xorm:"not null default '0' VARCHAR(50)"`
 	RoleId     int       `json:"role_id" xorm:"not null comment('角色id') INT(11)"`
-	SaveTime   time.Time `json:"_" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
-	UpdateTime time.Time `json:"_" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
+	SaveTime   time.Time `json:"-" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
+	UpdateTime time.Time `json:"-" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
 }

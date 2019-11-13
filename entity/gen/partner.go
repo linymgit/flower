@@ -10,6 +10,6 @@ type Partner struct {
 	EnterpriseName string    `json:"enterprise_name" xorm:"not null comment('企业名称') VARCHAR(255)"`
 	Intro          string    `json:"intro" xorm:"not null VARCHAR(255)"`
 	Weight         int       `json:"weight" xorm:"not null INT(11)"`
-	SaveTime       time.Time `json:"_" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
-	UpdateTime     time.Time `json:"_" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
+	SaveTime       time.Time `json:"-" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
+	UpdateTime     time.Time `json:"-" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
 }

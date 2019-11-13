@@ -44,6 +44,21 @@ func init() {
 		handler.CheckAdmin,
 	)
 
+	router.AddRoute(
+		"/admin/product/category/modify",
+		http.POST,
+		pc.ModifyProcategory,
+		//handler.CheckAdmin,
+	)
+
+	router.AddRoute(
+		"/admin/product/category/delete",
+		http.POST,
+		pc.DeleteProcategory,
+		//handler.CheckAdmin,
+	)
+
+
 	// --------------商品--------------------
 
 	//新增商品
@@ -51,15 +66,15 @@ func init() {
 		"/admin/product/new",
 		http.POST,
 		pc.NewProduct,
-		handler.CheckAdmin,
+		//handler.CheckAdmin,
 	)
 
 	//获取商品
 	router.AddRoute(
-		"/product/list",
+		"/admin/product/list",
 		http.POST,
 		pc.ListProduct,
-		handler.CheckAdmin,
+		//handler.CheckAdmin,
 	)
 
 }
@@ -113,7 +128,7 @@ func (pc *ProdCategory) NewProdCategory(ctx *fasthttp.RequestCtx, req *entity.Ne
 func (pc *ProdCategory) ProdCategoryTree(ctx *fasthttp.RequestCtx) (resp *result.Result) {
 	tree, err := service.ProdSrv.GetProductCategoryTree()
 	if err != nil {
-		result.NewError(result.UnKnowEc, "未知错误")
+		resp = result.DatabaseError
 		return
 	}
 	resp = result.NewSuccess(tree)
@@ -134,6 +149,37 @@ func (pc *ProdCategory) ChangeProcategoryState(ctx *fasthttp.RequestCtx, req *en
 	return
 }
 
+
+func (pc *ProdCategory) ModifyProcategory(ctx *fasthttp.RequestCtx, req *entity.ModifyCategoryReq) (rsp *result.Result) {
+	affected, err := service.ProdSrv.ModifyProcategory(req)
+	if err != nil {
+		rsp = result.DatabaseError
+		return
+	}
+	if affected != 1 {
+		rsp = result.NewError(result.RequestParamEc, "无修改的数据")
+		return
+	}
+	rsp = result.NewSuccess("修改成功")
+	return
+}
+
+func (pc *ProdCategory) DeleteProcategory(ctx *fasthttp.RequestCtx, req *entity.DeleteProdCategoryReq) (rsp *result.Result) {
+	affected, err := service.ProdSrv.DeleteProcategoryById(req.Id)
+	if err != nil {
+		rsp = result.DatabaseError
+		return
+	}
+	if affected != 1 {
+		rsp = result.NewError(result.RequestParamEc, "id不存在")
+		return
+	}
+	rsp = result.NewSuccess("删除成功")
+	return
+}
+
+// --------------商品--------------------
+
 func (pc *ProdCategory) NewProduct(ctx *fasthttp.RequestCtx, req *entity.NewProductReq) (rsp *result.Result) {
 	id, ok := http.GetJwtId(ctx)
 	if !ok {
@@ -150,5 +196,19 @@ func (pc *ProdCategory) NewProduct(ctx *fasthttp.RequestCtx, req *entity.NewProd
 }
 
 func (pc *ProdCategory) ListProduct(ctx *fasthttp.RequestCtx, req *entity.ListProductReq) (rsp *result.Result){
+	ps, total, err := service.ProdSrv.ListProduct(req)
+	if err != nil {
+		rsp = result.DatabaseError
+		return
+	}
+	rsp = result.NewSuccess(
+		&entity.ListProductRsp{
+			Page: &entity.Page{
+				PageSize:  req.Page.PageSize,
+				PageIndex: req.Page.PageIndex,
+				Total:     total,
+			},
+			Ps: ps,
+		})
 	return
 }

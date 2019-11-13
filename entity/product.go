@@ -40,6 +40,20 @@ type ProdCategoryStateReq struct {
 	Id int `json:"id"`
 }
 
+type ModifyCategoryReq struct {
+	Id     int    `json:"id" validate:"required"`
+	Name   string `json:"name" validate:"required"`
+	Desc   string `json:"desc"`
+	States int    `json:"states"`
+	Sort   int    `json:"sort"`
+}
+
+type DeleteProdCategoryReq struct {
+	Id int `json:"id"`
+}
+
+// --------------商品--------------------
+
 type NewProductReq struct {
 	Name    string `json:"name" validate:"required"`
 	Intro   string `json:"intro" validate:"required"`
@@ -59,11 +73,13 @@ type NewProductRsp struct {
 }
 
 type ListProductReq struct {
-	Sort int `json:"sort"`
-	IsHot bool `json:"is_hot"` //热门
-	IsNew bool `json:"is_new"` //最新
-	Page *Page `json:"page" validate:"required"`
+	Name       string `json:"name"`
+	States     int    `json:"states"`
+	CategoryId int    `json:"category_id"`
+	Page       *Page  `json:"page" validate:"required"`
 }
 
 type ListProductRsp struct {
+	Page *Page          `json:"page"`
+	Ps   []*gen.Product `json:"ps"`
 }

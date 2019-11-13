@@ -13,6 +13,6 @@ type Crm struct {
 	Company     string    `json:"company" xorm:"not null VARCHAR(255)"`
 	Deleted     int       `json:"deleted" xorm:"not null comment('删除状态 1删除 0未删除') TINYINT(4)"`
 	Message     string    `json:"message" xorm:"not null comment('留言') VARCHAR(1024)"`
-	SaveTime    time.Time `json:"_" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
-	UpdateTime  time.Time `json:"_" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
+	SaveTime    time.Time `json:"save_time" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
+	UpdateTime  time.Time `json:"-" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
 }

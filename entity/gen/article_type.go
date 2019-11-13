@@ -10,6 +10,6 @@ type ArticleType struct {
 	Sort       int       `json:"sort" xorm:"INT(11)"`
 	Level      int       `json:"level" xorm:"INT(11)"`
 	ParentId   int       `json:"parent_id" xorm:"INT(11)"`
-	SaveTime   time.Time `json:"_" xorm:"default 'CURRENT_TIMESTAMP' TIMESTAMP"`
-	UpdateTime time.Time `json:"_" xorm:"default 'CURRENT_TIMESTAMP' TIMESTAMP"`
+	SaveTime   time.Time `json:"-" xorm:"default 'CURRENT_TIMESTAMP' TIMESTAMP"`
+	UpdateTime time.Time `json:"-" xorm:"default 'CURRENT_TIMESTAMP' TIMESTAMP"`
 }
