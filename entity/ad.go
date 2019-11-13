@@ -21,7 +21,7 @@ type GetAdsReq struct {
 	Slogan     string `json:"slogan,omitempty"`
 	PositionId int    `json:"position_id,omitempty"`
 	StartTime  int64  `json:"start_time,omitempty"`
-	EndTime    int64  `json:"start_time,omitempty"`
+	EndTime    int64  `json:"end_time,omitempty"`
 	Page       *Page  `json:"page"`
 }
 
