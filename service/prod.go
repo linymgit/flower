@@ -227,3 +227,82 @@ func (p *ProdService) CategoryId2Name() (id2nameMap map[int]string, err error) {
 	}
 	return
 }
+
+func (p *ProdService) ChangeProductState(id int64) (ok bool, err error) {
+	result, err := mysql.Db.Exec("UPDATE `product` SET `states`=`states`^1 WHERE  `id`=?;", id)
+	if err != nil {
+		return
+	}
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return
+	}
+	ok = affected == 1
+	return
+}
+
+func (p *ProdService) ChangeProductIndexShow(id int64) (ok bool, err error) {
+	result, err := mysql.Db.Exec("UPDATE `product` SET `index_show`=`index_show`^1 WHERE  `id`=?;", id)
+	if err != nil {
+		return
+	}
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return
+	}
+	ok = affected == 1
+	return
+}
+
+func (p *ProdService) ModifyProduct(query *entity.ModifyProductReq) (ok bool, err error) {
+	cols := []string{}
+	if query.Name != "" {
+		cols = append(cols, "name")
+	}
+	if query.Intro != "" {
+		cols = append(cols, "intro")
+	}
+	if query.Summary != "" {
+		cols = append(cols, "summary")
+	}
+	if query.DetailsPicUrl != "" {
+		cols = append(cols, "details_pic_url")
+	}
+	if query.CoverUrl != "" {
+		cols = append(cols, "cover_url")
+	}
+	if query.Price != "" {
+		cols = append(cols, "price")
+	}
+	if query.CategoryId > 0 {
+		cols = append(cols, "category_id")
+	}
+	if len(cols) <= 0 {
+		ok = false
+		return
+	}
+	affected, err := mysql.Db.ID(query.Id).Cols(cols...).Update(&gen.Product{
+		Name:          query.Name,
+		Intro:         query.Intro,
+		Summary:       query.Summary,
+		DetailsPicUrl: query.DetailsPicUrl,
+		CoverUrl:      query.CoverUrl,
+		Price:         query.Price,
+		CategoryId:    query.CategoryId,
+		AuthorId:      query.AuthorId,
+	})
+	if err != nil {
+		return
+	}
+	ok = affected == 1
+	return
+}
+
+func (p *ProdService) DeleteProductById(id int64) (ok bool, err error) {
+	affected, err := mysql.Db.ID(id).Delete(&gen.Product{})
+	if err != nil {
+		return
+	}
+	ok = affected == 1
+	return
+}

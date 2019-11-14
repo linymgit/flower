@@ -76,6 +76,37 @@ func init() {
 		handler.CheckAdmin,
 	)
 
+	//上下架商品
+	router.AddRoute(
+		"/admin/product/state/change",
+		http.POST,
+		pc.ChangeProductState,
+		handler.CheckAdmin,
+	)
+
+	//设置是否首页推荐
+	router.AddRoute(
+		"/admin/product/indexshow/change",
+		http.POST,
+		pc.ChangeProductIndexShow,
+		handler.CheckAdmin,
+	)
+
+	//修改商品
+	router.AddRoute(
+		"/admin/product/modify",
+		http.POST,
+		pc.ModifyProduct,
+		handler.CheckAdmin,
+	)
+
+	//删除商品
+	router.AddRoute(
+		"/admin/product/delete",
+		http.POST,
+		pc.DeleteProductById,
+		handler.CheckAdmin,
+	)
 }
 
 //获取产品分类列表
@@ -220,5 +251,61 @@ func (pc *ProdCategory) ListProduct(ctx *fasthttp.RequestCtx, req *entity.ListPr
 			},
 			Ps: ps,
 		})
+	return
+}
+
+func (pc *ProdCategory) ChangeProductState(ctx *fasthttp.RequestCtx, req *entity.ChangeProductStateReq) (rsp *result.Result) {
+	ok, err := service.ProdSrv.ChangeProductState(req.Id)
+	if err != nil {
+		rsp = result.DatabaseError
+		return
+	}
+	if !ok {
+		rsp = result.NewError(result.RequestParamEc, "产品id不存在")
+		return
+	}
+	rsp = result.NewSuccess("修改成功")
+	return
+}
+
+func (pc *ProdCategory) ChangeProductIndexShow(ctx *fasthttp.RequestCtx, req *entity.ChangeProductIndexShowReq) (rsp *result.Result) {
+	ok, err := service.ProdSrv.ChangeProductIndexShow(req.Id)
+	if err != nil {
+		rsp = result.DatabaseError
+		return
+	}
+	if !ok {
+		rsp = result.NewError(result.RequestParamEc, "产品id不存在")
+		return
+	}
+	rsp = result.NewSuccess("修改成功")
+	return
+}
+
+func (pc *ProdCategory) ModifyProduct(ctx *fasthttp.RequestCtx, req *entity.ModifyProductReq) (rsp *result.Result) {
+	ok, err := service.ProdSrv.ModifyProduct(req)
+	if err != nil {
+		rsp = result.DatabaseError
+		return
+	}
+	if !ok {
+		rsp = result.NewError(result.RequestParamEc, "无修改的数据")
+		return
+	}
+	rsp = result.NewSuccess("修改成功")
+	return
+}
+
+func (pc *ProdCategory) DeleteProductById(ctx *fasthttp.RequestCtx, req *entity.DeleteProductByIdReq) (rsp *result.Result) {
+	ok, err := service.ProdSrv.DeleteProductById(req.Id)
+	if err != nil {
+		rsp = result.DatabaseError
+		return
+	}
+	if !ok {
+		rsp = result.NewError(result.RequestParamEc, "产品id不存在")
+		return
+	}
+	rsp = result.NewSuccess("删除成功")
 	return
 }

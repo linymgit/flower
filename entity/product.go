@@ -83,3 +83,30 @@ type ListProductRsp struct {
 	Page *Page          `json:"page"`
 	Ps   []*gen.Product `json:"ps"`
 }
+
+type ChangeProductStateReq struct {
+	Id int64 `json:"id"`
+}
+
+type ChangeProductIndexShowReq struct {
+	Id int64 `json:"id"`
+}
+
+type ModifyProductReq struct {
+	Id      int64  `json:"id" validate:"required"`
+	Name    string `json:"name"`
+	Intro   string `json:"intro"`
+	Summary string `json:"summary"`
+	//States        int    `json:"states"`
+	//IndexShow     int    `json:"index_show"`
+	DetailsPicUrl string `json:"details_pic_url"`
+	CoverUrl      string `json:"cover_url"`
+	Price         string `json:"price"`
+	//Heat          int     `json:"heat"`
+	CategoryId int   `json:"category_id"`
+	AuthorId   int64 `json:"-"`
+}
+
+type DeleteProductByIdReq struct {
+	Id int64 `json:"id"`
+}
