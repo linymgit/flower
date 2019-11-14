@@ -18,6 +18,6 @@ type Article struct {
 	Clicks     int       `json:"clicks" xorm:"not null index INT(11)"`
 	States     int       `json:"states" xorm:"not null TINYINT(4)"`
 	Sort       int       `json:"sort" xorm:"not null INT(11)"`
-	SaveTime   time.Time `json:"-" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
+	SaveTime   time.Time `json:"save_time" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
 	UpdateTime time.Time `json:"-" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
 }

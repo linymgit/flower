@@ -93,18 +93,15 @@ type ChangeProductIndexShowReq struct {
 }
 
 type ModifyProductReq struct {
-	Id      int64  `json:"id" validate:"required"`
-	Name    string `json:"name"`
-	Intro   string `json:"intro"`
-	Summary string `json:"summary"`
-	//States        int    `json:"states"`
-	//IndexShow     int    `json:"index_show"`
+	Id            int64  `json:"id" validate:"required"`
+	Name          string `json:"name"`
+	Intro         string `json:"intro"`
+	Summary       string `json:"summary"`
 	DetailsPicUrl string `json:"details_pic_url"`
 	CoverUrl      string `json:"cover_url"`
 	Price         string `json:"price"`
-	//Heat          int     `json:"heat"`
-	CategoryId int   `json:"category_id"`
-	AuthorId   int64 `json:"-"`
+	CategoryId    int    `json:"category_id"`
+	AuthorId      int64  `json:"-"`
 }
 
 type DeleteProductByIdReq struct {
