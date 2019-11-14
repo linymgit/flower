@@ -85,11 +85,11 @@ type ListProductRsp struct {
 }
 
 type ChangeProductStateReq struct {
-	Id int64 `json:"id"`
+	Id int64 `json:"id" validate:"required"`
 }
 
 type ChangeProductIndexShowReq struct {
-	Id int64 `json:"id"`
+	Id int64 `json:"id" validate:"required"`
 }
 
 type ModifyProductReq struct {
@@ -105,5 +105,5 @@ type ModifyProductReq struct {
 }
 
 type DeleteProductByIdReq struct {
-	Id int64 `json:"id"`
+	Id int64 `json:"id" validate:"required"`
 }

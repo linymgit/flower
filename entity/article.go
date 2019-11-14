@@ -68,3 +68,25 @@ type ListArticleRsp struct {
 	Page *Page          `json:"page"`
 	As   []*gen.Article `json:"as"`
 }
+
+type ChangeOnlineReq struct {
+	Id int64 `json:"id" validate:"required"`
+}
+
+type DeleteArticleReq struct {
+	Id int64 `json:"id" validate:"required"`
+}
+
+type ModifyArticleReq struct {
+	Id        int64  `json:"id" validate:"required"`
+	TypeId    int    `json:"type_id"`
+	Title     string `json:"title"`
+	Author    string `json:"author"`
+	Source    string `json:"source"`
+	SourceUrl string `json:"source_url"`
+	Preview   string `json:"preview"`
+	KeyWord   string `json:"key_word"`
+	Summary   string `json:"summary"`
+	Content   string `json:"content"`
+	Sort      int    `json:"sort" xorm:"not null INT(11)"`
+}

@@ -62,6 +62,30 @@ func init() {
 		ac.ListArticle,
 		handler.CheckAdmin,
 	)
+
+	//上下线状态设置
+	router.AddRoute(
+		"/admin/article/online/change",
+		http.POST,
+		ac.ChangeOnline,
+		handler.CheckAdmin,
+	)
+
+	//删除文章
+	router.AddRoute(
+		"/admin/article/delete",
+		http.POST,
+		ac.DeleteArticle,
+		handler.CheckAdmin,
+	)
+
+	//修改（编辑）文章
+	router.AddRoute(
+		"/admin/article/modify",
+		http.POST,
+		ac.ModifyArticle,
+		handler.CheckAdmin,
+	)
 }
 
 //获取产品分类列表
@@ -156,5 +180,47 @@ func (ac *Article) ListArticle(ctx *fasthttp.RequestCtx, req *entity.ListArticle
 			},
 			As: as,
 		})
+	return
+}
+
+func (ac *Article) ChangeOnline(ctx *fasthttp.RequestCtx, req *entity.ChangeOnlineReq) (rsp *result.Result) {
+	ok, err := service.ArticleSrv.ChangeOnline(req.Id)
+	if err != nil {
+		rsp = result.DatabaseError
+		return
+	}
+	if !ok {
+		rsp = result.NewError(result.RequestParamEc, "无修改的数据")
+		return
+	}
+	rsp = result.NewSuccess("修改成功")
+	return
+}
+
+func (ac *Article) DeleteArticle(ctx *fasthttp.RequestCtx, req *entity.DeleteArticleReq) (rsp *result.Result) {
+	ok, err := service.ArticleSrv.DeleteArticle(req.Id)
+	if err != nil {
+		rsp = result.DatabaseError
+		return
+	}
+	if !ok {
+		rsp = result.NewError(result.RequestParamEc, "产品id不存在")
+		return
+	}
+	rsp = result.NewSuccess("删除成功")
+	return
+}
+
+func (ac *Article) ModifyArticle(ctx *fasthttp.RequestCtx, req *entity.ModifyArticleReq) (rsp *result.Result) {
+	ok, err := service.ArticleSrv.ModifyArticle(req)
+	if err != nil {
+		rsp = result.DatabaseError
+		return
+	}
+	if !ok {
+		rsp = result.NewError(result.RequestParamEc, "产品id不存在")
+		return
+	}
+	rsp = result.NewSuccess("修改成功")
 	return
 }

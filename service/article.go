@@ -9,7 +9,6 @@ import (
 	"xorm.io/builder"
 )
 
-
 var ArticleSrv = &ArticleService{&sync.Mutex{}}
 
 type ArticleService struct {
@@ -25,7 +24,7 @@ func (ac *ArticleService) ListArticleType(query *entity.ListArticleTypeReq) (ats
 		if err != nil {
 			//TODO
 		}
-	}else{
+	} else {
 		total, err = session.Where(builder.Eq{"parent_id": query.ParentId}).Asc("sort").Limit(query.Page.PageSize, query.Page.DbPageIndex()).FindAndCount(&ats)
 		if err != nil {
 			//TODO
@@ -47,11 +46,11 @@ func (ac *ArticleService) GetArticleCategoryTree() (tree *entity.ArticleTypeTree
 			return
 		}
 		vo := &entity.ArticleTypeVo{
-			Id:             bean.Id,
-			TypeName:       bean.TypeName,
-			Sort:           bean.Sort,
-			Level:          bean.Level,
-			ParentId:       bean.ParentId,
+			Id:       bean.Id,
+			TypeName: bean.TypeName,
+			Sort:     bean.Sort,
+			Level:    bean.Level,
+			ParentId: bean.ParentId,
 		}
 		if vos, ok := vosMap[vo.Level]; ok {
 			vos = append(vos, vo)
@@ -103,15 +102,15 @@ func (ac *ArticleService) NewArticleType(query *entity.NewArticleTypeReq) (isExi
 			//TODO
 			return
 		}
-		level = query.ParentId+1
-	}else{
+		level = query.ParentId + 1
+	} else {
 		isExistParent = true
 	}
 	affected, err := mysql.Db.Cols("type_name", "sort", "level", "parent_id").InsertOne(&gen.ArticleType{
-		TypeName:   query.TypeName,
-		Sort:       query.Sort,
-		Level:      level,
-		ParentId:   query.ParentId,
+		TypeName: query.TypeName,
+		Sort:     query.Sort,
+		Level:    level,
+		ParentId: query.ParentId,
 	})
 	if err != nil {
 		//TODO
@@ -121,7 +120,7 @@ func (ac *ArticleService) NewArticleType(query *entity.NewArticleTypeReq) (isExi
 	return
 }
 
-func (ac *ArticleService) EditArticle(query *entity.EditArticleTypeReq) (ok,existParent bool, err error) {
+func (ac *ArticleService) EditArticle(query *entity.EditArticleTypeReq) (ok, existParent bool, err error) {
 	ac.m.Lock()
 	defer ac.m.Unlock()
 	level := 1
@@ -132,11 +131,11 @@ func (ac *ArticleService) EditArticle(query *entity.EditArticleTypeReq) (ok,exis
 			//TODO
 			return
 		}
-		level = query.ParentId+1
-	}else{
+		level = query.ParentId + 1
+	} else {
 		existParent = true
 	}
-	i, err := mysql.Db.Id(query.Id).Cols("type_name","sort","level","parent_id").Update(&gen.ArticleType{
+	i, err := mysql.Db.Id(query.Id).Cols("type_name", "sort", "level", "parent_id").Update(&gen.ArticleType{
 		TypeName: query.TypeName,
 		Sort:     query.Sort,
 		Level:    level,
@@ -147,10 +146,10 @@ func (ac *ArticleService) EditArticle(query *entity.EditArticleTypeReq) (ok,exis
 }
 
 func (ac *ArticleService) NewArticle(query *entity.NewArticleReq) (articleId int64, err error) {
-	result, err := mysql.Db.Exec("INSERT INTO `article` (`type_id`,`title`,`author`,`source`,`source_url`," +
+	result, err := mysql.Db.Exec("INSERT INTO `article` (`type_id`,`title`,`author`,`source`,`source_url`,"+
 		"`preview`,`key_word`,`summary`,`content`,`clicks`,`states`,`sort`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 		query.TypeId, query.Title, query.Author, query.Source, query.SourceUrl, query.Preview, query.KeyWord, query.Summary,
-	    query.Content, 0, query.States, query.Sort)
+		query.Content, 0, query.States, query.Sort)
 	if err != nil {
 		return
 	}
@@ -161,20 +160,97 @@ func (ac *ArticleService) NewArticle(query *entity.NewArticleReq) (articleId int
 	return
 }
 
-func (ac *ArticleService) ListArticle(query *entity.ListArticleReq) (as []*gen.Article,total int64, err error) {
+func (ac *ArticleService) ListArticle(query *entity.ListArticleReq) (as []*gen.Article, total int64, err error) {
 	as = make([]*gen.Article, 0)
 	cond := builder.NewCond()
 	if query.Title != "" {
-		cond = cond.And(builder.Eq{"title":query.Title})
+		cond = cond.And(builder.Eq{"title": query.Title})
 	}
-	if query.TypeId != 0{
-		cond = cond.And(builder.Eq{"type_id":query.TypeId})
+	if query.TypeId != 0 {
+		cond = cond.And(builder.Eq{"type_id": query.TypeId})
 	}
-	if query.PublishStartTime>0 && query.PublishEndTime>0 {
-		start := time.Unix(query.PublishStartTime, 0).Add(-24*time.Hour).Format(timeTemplate)
-		end := time.Unix(query.PublishEndTime, 0).Add(24*time.Hour).Format(timeTemplate)
-		cond = cond.And(builder.Gt{"save_time":start}).And(builder.Lt{"save_time":end})
+	if query.PublishStartTime > 0 && query.PublishEndTime > 0 {
+		start := time.Unix(query.PublishStartTime, 0).Add(-24 * time.Hour).Format(timeTemplate)
+		end := time.Unix(query.PublishEndTime, 0).Add(24 * time.Hour).Format(timeTemplate)
+		cond = cond.And(builder.Gt{"save_time": start}).And(builder.Lt{"save_time": end})
 	}
 	total, err = mysql.Db.Where(cond).Limit(query.Page.PageSize, query.Page.DbPageIndex()).FindAndCount(&as)
+	return
+}
+
+func (ac *ArticleService) ChangeOnline(id int64) (ok bool, err error) {
+	result, err := mysql.Db.Exec("UPDATE `article` SET `states`=`states`^1 WHERE  `id`=?;", id)
+	if err != nil {
+		return
+	}
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return
+	}
+	ok = affected == 1
+	return
+}
+
+func (ac *ArticleService) DeleteArticle(id int64) (ok bool, err error) {
+	affected, err := mysql.Db.ID(id).Delete(&gen.Article{})
+	if err != nil {
+		return
+	}
+	ok = affected == 1
+	return
+}
+
+func (ac *ArticleService) ModifyArticle(query *entity.ModifyArticleReq) (ok bool, err error) {
+	cols := []string{}
+	if query.TypeId > 0 {
+		cols = append(cols, "type_id")
+	}
+	if query.Title != "" {
+		cols = append(cols, "title")
+	}
+	if query.Author != "" {
+		cols = append(cols, "author")
+	}
+	if query.Source != "" {
+		cols = append(cols, "source")
+	}
+	if query.SourceUrl != "" {
+		cols = append(cols, "source_url")
+	}
+	if query.Preview != "" {
+		cols = append(cols, "preview")
+	}
+	if query.KeyWord != "" {
+		cols = append(cols, "key_word")
+	}
+	if query.Summary != "" {
+		cols = append(cols, "summary")
+	}
+	if query.Content != "" {
+		cols = append(cols, "content")
+	}
+	if query.Sort > 0 {
+		cols = append(cols, "sort")
+	}
+	if len(cols) <= 0 {
+		ok = false
+		return
+	}
+	affected, err := mysql.Db.ID(query.Id).Cols(cols...).Update(&gen.Article{
+		TypeId:    query.TypeId,
+		Title:     query.Title,
+		Author:    query.Author,
+		Source:    query.Source,
+		SourceUrl: query.SourceUrl,
+		Preview:   query.Preview,
+		KeyWord:   query.KeyWord,
+		Summary:   query.Summary,
+		Content:   query.Content,
+		Sort:      query.Sort,
+	})
+	if err != nil {
+		return
+	}
+	ok = affected == 1
 	return
 }
