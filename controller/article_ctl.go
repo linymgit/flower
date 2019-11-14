@@ -204,7 +204,7 @@ func (ac *Article) DeleteArticle(ctx *fasthttp.RequestCtx, req *entity.DeleteArt
 		return
 	}
 	if !ok {
-		rsp = result.NewError(result.RequestParamEc, "产品id不存在")
+		rsp = result.NewError(result.RequestParamEc, "无文章id")
 		return
 	}
 	rsp = result.NewSuccess("删除成功")
@@ -218,7 +218,7 @@ func (ac *Article) ModifyArticle(ctx *fasthttp.RequestCtx, req *entity.ModifyArt
 		return
 	}
 	if !ok {
-		rsp = result.NewError(result.RequestParamEc, "产品id不存在")
+		rsp = result.NewError(result.RequestParamEc, "无修改数据")
 		return
 	}
 	rsp = result.NewSuccess("修改成功")
