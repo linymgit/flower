@@ -35,7 +35,7 @@ func init() {
 
 	router.AddRoute(
 		"/admin/article/category/list",
-		http.GET,
+		http.POST,
 		ac.ListArticleType,
 		handler.CheckAdmin,
 	)
@@ -58,7 +58,7 @@ func init() {
 
 	router.AddRoute(
 		"/admin/article/list",
-		http.GET,
+		http.POST,
 		ac.ListArticle,
 		handler.CheckAdmin,
 	)
@@ -115,7 +115,7 @@ func (ac *Article) GetActicleCategoryTree(ctx *fasthttp.RequestCtx) (rsp *result
 	return
 }
 
-func (ac *Article) EditArticleType(ctx *fasthttp.RequestCtx,req *entity.EditArticleTypeReq) (rsp *result.Result) {
+func (ac *Article) EditArticleType(ctx *fasthttp.RequestCtx, req *entity.EditArticleTypeReq) (rsp *result.Result) {
 	ok, existParent, err := service.ArticleSrv.EditArticle(req)
 	if err != nil {
 		rsp = result.DatabaseError
@@ -130,13 +130,13 @@ func (ac *Article) EditArticleType(ctx *fasthttp.RequestCtx,req *entity.EditArti
 }
 
 //创建文章
-func (ac *Article) NewArticle(ctx *fasthttp.RequestCtx,req *entity.NewArticleReq) (rsp *result.Result){
+func (ac *Article) NewArticle(ctx *fasthttp.RequestCtx, req *entity.NewArticleReq) (rsp *result.Result) {
 	articleId, err := service.ArticleSrv.NewArticle(req)
 	if err != nil {
 		rsp = result.DatabaseError
 		return
 	}
-	rsp = result.NewSuccess(&entity.NewArticleRsp{ArticleId:articleId})
+	rsp = result.NewSuccess(&entity.NewArticleRsp{ArticleId: articleId})
 	return
 }
 
@@ -154,7 +154,7 @@ func (ac *Article) ListArticle(ctx *fasthttp.RequestCtx, req *entity.ListArticle
 				PageIndex: req.Page.PageIndex,
 				Total:     total,
 			},
-			As:as,
+			As: as,
 		})
 	return
 }
