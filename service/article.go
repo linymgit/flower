@@ -34,7 +34,7 @@ func (ac *ArticleService) ListArticleType(query *entity.ListArticleTypeReq) (ats
 }
 
 func (ac *ArticleService) GetArticleCategoryTree() (tree *entity.ArticleTypeTree, err error) {
-	rows, err := mysql.Db.Rows(&gen.ArticleType{})
+	rows, err := mysql.Db.Asc("sort").Rows(&gen.ArticleType{})
 	if err != nil {
 	}
 	defer rows.Close()

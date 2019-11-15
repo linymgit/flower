@@ -34,7 +34,7 @@ func (p *ProdService) ListProductCategory(query *entity.ListProductCategoryReq) 
 }
 
 func (p *ProdService) GetProductCategoryTree() (tree *entity.ProdCategoryTree, err error) {
-	rows, err := mysql.Db.Rows(&gen.ProductCategory{})
+	rows, err := mysql.Db.Asc("sort").Rows(&gen.ProductCategory{})
 	if err != nil {
 	}
 	defer rows.Close()

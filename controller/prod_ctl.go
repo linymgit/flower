@@ -18,7 +18,7 @@ func init() {
 
 	router.AddRoute(
 		"/admin/product/category/list",
-		http.GET,
+		http.POST,
 		pc.ListProdCategory,
 		handler.CheckAdmin,
 	)

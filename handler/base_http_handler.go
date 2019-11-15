@@ -15,7 +15,7 @@ func BaseHttpHandler(handler interface{}) fasthttp.RequestHandler {
 			if err := recover(); err != nil {
 				// TODO
 				//e := err.(result)
-				//print(e.Error())
+				print(err)
 				bytes, err := json.Marshal(error2.NewError(error2.ServerEc, "server internal result"))
 				if err != nil {
 					// TODO

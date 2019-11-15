@@ -17,13 +17,13 @@ func init() {
 
 	router.AddRoute(
 		"/product/list",
-		http.GET,
+		http.POST,
 		fP.ListProduct,
 	)
 
 	router.AddRoute(
 		"/product/category/list",
-		http.GET,
+		http.POST,
 		fP.ListCategory,
 	)
 }
