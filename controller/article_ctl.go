@@ -48,6 +48,14 @@ func init() {
 		handler.CheckAdmin,
 	)
 
+	//删除文章分类
+	router.AddRoute(
+		"/admin/article/category/delete",
+		http.POST,
+		ac.DeleteArticleType,
+		handler.CheckAdmin,
+	)
+
 	// --------------文章--------------------
 	router.AddRoute(
 		"/admin/article/new",
@@ -150,6 +158,24 @@ func (ac *Article) EditArticleType(ctx *fasthttp.RequestCtx, req *entity.EditArt
 		return
 	}
 	rsp = result.NewSuccess(ok)
+	return
+}
+
+func (ac *Article) DeleteArticleType(ctx *fasthttp.RequestCtx, req *entity.DeleteAricleTypeByIdReq) (rsp *result.Result) {
+	isParent, ok, err := service.ArticleSrv.DeleteAricleTypeById(req.Id)
+	if err != nil {
+		rsp = result.DatabaseError
+		return
+	}
+	if isParent {
+		rsp = result.NewError(result.ParamEc, "是上级分类,要删除这个分类要先删除他的所有下级分类")
+		return
+	}
+	if !ok {
+		rsp = result.NewError(result.RequestParamEc, "id不存在")
+		return
+	}
+	rsp = result.NewSuccess("删除成功")
 	return
 }
 

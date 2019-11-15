@@ -254,3 +254,17 @@ func (ac *ArticleService) ModifyArticle(query *entity.ModifyArticleReq) (ok bool
 	ok = affected == 1
 	return
 }
+
+func (ac *ArticleService) DeleteAricleTypeById(id int)(isParent,ok bool, err error) {
+	isParent, err = mysql.Db.Where("parent_id = ?", id).Cols("id").Exist(&gen.ArticleType{})
+	if err != nil {
+		return
+	}
+	if isParent {
+		return
+	}
+	var affected int64
+	affected, err = mysql.Db.Id(id).Delete(&gen.ArticleType{})
+	ok = affected == 1
+	return
+}

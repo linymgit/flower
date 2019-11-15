@@ -90,3 +90,8 @@ type ModifyArticleReq struct {
 	Content   string `json:"content"`
 	Sort      int    `json:"sort" xorm:"not null INT(11)"`
 }
+
+
+type DeleteAricleTypeByIdReq struct {
+	Id int `json:"id" validate:"required"`
+}
