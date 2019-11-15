@@ -196,7 +196,9 @@ func (p *ProdService) DeleteProcategoryById(id int) (isParent bool, affected int
 func (p *ProdService) ListProduct(query *entity.ListProductReq) (ps []*gen.Product, total int64, err error) {
 	ps = make([]*gen.Product, 0)
 	cond := builder.NewCond()
-	cond = cond.And(builder.Eq{"states": query.States})
+	if query.States != state.ProdAll {
+		cond = cond.And(builder.Eq{"states": query.States})
+	}
 	if query.Name != "" {
 		cond = cond.And(builder.Eq{"name": query.Name})
 	}

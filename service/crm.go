@@ -46,3 +46,17 @@ func (c *CrmServer) DeleteCrmById(id int64) (ok bool, err error) {
 	}
 	return
 }
+
+func (c *CrmServer) InsertCrm(query entity.AddCrmReq) (ok bool, err error) {
+	affected, err := mysql.Db.InsertOne(&gen.Crm{
+		Name:        query.Name,
+		Email:       query.Email,
+		Phone:       query.Phone,
+		OfficialWeb: query.OfficialWeb,
+		Company:     query.Company,
+		Message:     query.Message,
+	})
+	ok = affected == 1
+	return
+}
+

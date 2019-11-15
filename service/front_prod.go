@@ -15,7 +15,7 @@ type FrontProdService struct {
 
 func (fP FrontProdService) ListCategory() (categories []*entity.FrontCategory, err error){
 	categories = make([]*entity.FrontCategory, 0)
-	err = mysql.Db.Table(&gen.ProductCategory{}).Where("states = ?",state.ProdCategoryShow).Cols("id","name").Find(&categories)
+	err = mysql.Db.Table(&gen.ProductCategory{}).Where("states = ?",state.ProdCategoryShow).Cols("id","name").Asc("sort").Find(&categories)
 	return
 }
 
@@ -45,3 +45,13 @@ func (fP FrontProdService) ListProduct(query *entity.FrontListProductReq) (ps []
 	return
 }
 
+func (fP FrontProdService) GetProduct(id int64) (p *gen.Product,ok bool, err error){
+	session := mysql.Db.NewSession()
+	defer session.Close()
+	p = &gen.Product{}
+	ok, err = mysql.Db.ID(id).Get(p)
+	if err != nil {
+		return
+	}
+	return
+}

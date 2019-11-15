@@ -13,6 +13,7 @@ const (
 const (
 	ProdOnline int = iota
 	ProdOffline
+	ProdAll
 )
 
 const (

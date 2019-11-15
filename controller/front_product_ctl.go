@@ -26,6 +26,13 @@ func init() {
 		http.POST,
 		fP.ListCategory,
 	)
+
+	//根据产品详情
+	router.AddRoute(
+		"/product/get",
+		http.POST,
+		fP.GetProduct,
+	)
 }
 
 //获取产品分类列表
@@ -55,5 +62,20 @@ func (fP *FrontProduct) ListCategory(ctx *fasthttp.RequestCtx) (rsp *result.Resu
 		return
 	}
 	rsp = result.NewSuccess(&entity.FrontListCategoryRsp{Categories:categories})
+	return
+}
+
+//获取产品
+func (fP *FrontProduct) GetProduct(ctx *fasthttp.RequestCtx, req *entity.FrontGetProductReq) (rsp *result.Result){
+	p, ok, err := service.FrontProdSrv.GetProduct(req.Id)
+	if err != nil {
+		rsp = result.DatabaseError
+		return
+	}
+	if !ok {
+		rsp = result.NewError(result.RequestParamEc, "产品不存在")
+		return
+	}
+	rsp = result.NewSuccess(&entity.FrontGetProductRsp{Product:p})
 	return
 }

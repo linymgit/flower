@@ -24,3 +24,11 @@ type FrontCategory struct {
 type FrontListCategoryRsp struct {
 	Categories []*FrontCategory `json:"categories"`
 }
+
+type FrontGetProductReq struct {
+	Id   int64    `json:"id"`
+}
+
+type FrontGetProductRsp struct {
+	Product *gen.Product `json:"product"`
+}
