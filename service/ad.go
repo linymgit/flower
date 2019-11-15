@@ -76,3 +76,37 @@ func (ad *AdService) DeleteAd(adId int64) (ok bool, err error) {
 	ok = i == 1
 	return
 }
+
+func (ad *AdService) Modify(query *entity.ModifyAdReq) (ok bool, err error) {
+	cols := []string{"state","goto_type"}
+	if query.AdLink != "" {
+		cols = append(cols, "ad_link")
+	}
+	if query.PicUrl != "" {
+		cols = append(cols, "pic_url")
+	}
+	if query.Slogan != "" {
+		cols = append(cols, "slogan")
+	}
+	if query.PostionId>0 {
+		cols = append(cols, "postion_id")
+	}
+	if query.StartTime > 0 {
+		cols = append(cols, "start_time")
+	}
+	if query.EndTime > 0 {
+		cols = append(cols, "end_time")
+	}
+	affected, err := mysql.Db.ID(query.Id).Cols(cols...).Update(&gen.Ad{
+		Slogan:    query.Slogan,
+		PicUrl:    query.PicUrl,
+		PostionId: query.PostionId,
+		GotoType:  query.GotoType,
+		AdLink:    query.AdLink,
+		State:     query.State,
+		StartTime: time.Unix(query.StartTime, 0),
+		EndTime:   time.Unix(query.EndTime, 0),
+	})
+	ok = affected == 1
+	return
+}

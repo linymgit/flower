@@ -43,6 +43,14 @@ func init() {
 		ad.DeleteAdById,
 		handler.CheckAdmin,
 	)
+
+	//编辑修改广告
+	router.AddRoute(
+		"/admin/ad/modify",
+		http.POST,
+		ad.ModifyAd,
+		handler.CheckAdmin,
+	)
 }
 
 func (ad *Ad) NewGd(ctx *fasthttp.RequestCtx, req *entity.NewAdReq) (rsp *result.Result) {
@@ -90,5 +98,20 @@ func (ad *Ad) DeleteAdById(ctx *fasthttp.RequestCtx, req *entity.ChangeAdStateRe
 		return
 	}
 	rsp = result.NewSuccess(ok)
+	return
+}
+
+
+func (ad *Ad) ModifyAd(ctx *fasthttp.RequestCtx, req *entity.ModifyAdReq) (rsp *result.Result) {
+	ok, err := service.Adsrv.Modify(req)
+	if err != nil {
+		rsp = result.DatabaseError
+		return
+	}
+	if !ok {
+		rsp = result.NewError(result.RequestParamEc, "无修改数据或者广告id不存在")
+		return
+	}
+	rsp = result.NewSuccess("修改成功")
 	return
 }

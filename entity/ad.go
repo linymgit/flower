@@ -37,3 +37,15 @@ type ChangeAdStateReq struct {
 type DeleteAdStateReq struct {
 	Id int64 `json:"id" validate:"required"`
 }
+
+type ModifyAdReq struct {
+	Id        int64  `json:"id" validate:"required"`
+	Slogan    string `json:"slogan"`
+	PicUrl    string `json:"pic_url"`
+	State     int    `json:"state"`
+	AdLink    string `json:"ad_link"`
+	PostionId int    `json:"postion_id"`
+	GotoType  int    `json:"goto_type"`
+	StartTime int64  `json:"start_time"`
+	EndTime   int64  `json:"end_time"`
+}
