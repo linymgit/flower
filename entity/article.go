@@ -23,6 +23,7 @@ type NewArticleTypeReq struct {
 
 type ListArticleTypeReq struct {
 	ParentId int   `json:"parent_id"`
+	Id       int   `json:"id"`
 	Page     *Page `json:"page"`
 }
 
@@ -90,7 +91,6 @@ type ModifyArticleReq struct {
 	Content   string `json:"content"`
 	Sort      int    `json:"sort" xorm:"not null INT(11)"`
 }
-
 
 type DeleteAricleTypeByIdReq struct {
 	Id int `json:"id" validate:"required"`
