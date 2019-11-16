@@ -108,7 +108,7 @@ func (ac *ArticleService) NewArticleType(query *entity.NewArticleTypeReq) (isExi
 			//TODO
 			return
 		}
-		level = query.ParentId + 1
+		level = parent.Level + 1
 	} else {
 		isExistParent = true
 	}
