@@ -110,7 +110,7 @@ func (p *ProdService) NewProductCategory(query *entity.NewProdCategoryReq) (isEx
 			//TODO
 			return
 		}
-		level = query.ParentId + 1
+		level = parent.Level + 1
 	} else {
 		isExistParent = true
 	}
