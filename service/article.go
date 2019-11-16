@@ -131,7 +131,7 @@ func (ac *ArticleService) EditArticle(query *entity.EditArticleTypeReq) (ok, exi
 			//TODO
 			return
 		}
-		level = query.ParentId + 1
+		level = parent.Level + 1
 	} else {
 		existParent = true
 	}
