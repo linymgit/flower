@@ -6,6 +6,7 @@ import (
 
 type ListProductCategoryReq struct {
 	ParentId int   `json:"parent_id"`
+	Id       int   `json:"id"`
 	Page     *Page `json:"page"`
 }
 

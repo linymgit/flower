@@ -19,13 +19,20 @@ func (p *ProdService) ListProductCategory(query *entity.ListProductCategoryReq) 
 	pcs = make([]*gen.ProductCategory, 0)
 	session := mysql.Db.NewSession()
 	defer session.Close()
+	cond := builder.NewCond()
+	if query.ParentId > 0 {
+		cond = cond.And(builder.Eq{"parent_id":query.ParentId})
+	}
+	if query.Id > 0 {
+		cond = cond.And(builder.Eq{"id":query.Id})
+	}
 	if query.Page == nil {
-		err = session.Where(builder.Eq{"parent_id": query.ParentId}).Asc("sort").Find(&pcs)
+		err = session.Where(cond).Asc("sort").Find(&pcs)
 		if err != nil {
 			//TODO
 		}
 	} else {
-		total, err = session.Where(builder.Eq{"parent_id": query.ParentId}).Asc("sort").Limit(query.Page.PageSize, query.Page.DbPageIndex()).FindAndCount(&pcs)
+		total, err = session.Where(cond).Asc("sort").Limit(query.Page.PageSize, query.Page.DbPageIndex()).FindAndCount(&pcs)
 		if err != nil {
 			//TODO
 		}
