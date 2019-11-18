@@ -20,25 +20,34 @@ func init() {
 		http.POST,
 		frontArticle.ListArticlesType,
 	)
+	router.AddRoute(
+		"/article/category/list",
+		http.OPTIONS,
+		frontArticle.ListArticlesType,
+	)
 
 	router.AddRoute(
 		"/article/list",
 		http.POST,
 		frontArticle.ListArticles,
 	)
+	router.AddRoute(
+		"/article/list",
+		http.OPTIONS,
+		frontArticle.ListArticles,
+	)
 }
 
-func (fA *FrontArticle)ListArticlesType(ctx *fasthttp.RequestCtx)(rsp *result.Result){
+func (fA *FrontArticle) ListArticlesType(ctx *fasthttp.RequestCtx) (rsp *result.Result) {
 	categories, err := service.FrontArticleSrv.ListArticleType()
 	if err != nil {
 		rsp = result.DatabaseError
 		return
 	}
-	rsp = result.NewSuccess(&entity.FrontArticleTypeRsp{Categories:categories})
+	rsp = result.NewSuccess(&entity.FrontArticleTypeRsp{Categories: categories})
 	return
 }
 
-
-func (fA *FrontArticle)ListArticles(ctx *fasthttp.RequestCtx, req entity.AddCrmReq)(rsp *result.Result){
+func (fA *FrontArticle) ListArticles(ctx *fasthttp.RequestCtx, req entity.AddCrmReq) (rsp *result.Result) {
 	return
 }

@@ -20,7 +20,6 @@ func init() {
 		http.POST,
 		fP.ListProduct,
 	)
-
 	router.AddRoute(
 		"/product/list",
 		http.OPTIONS,
@@ -32,11 +31,21 @@ func init() {
 		http.POST,
 		fP.ListCategory,
 	)
+	router.AddRoute(
+		"/product/category/list",
+		http.OPTIONS,
+		fP.ListCategory,
+	)
 
 	//根据产品详情
 	router.AddRoute(
 		"/product/get",
 		http.POST,
+		fP.GetProduct,
+	)
+	router.AddRoute(
+		"/product/get",
+		http.OPTIONS,
 		fP.GetProduct,
 	)
 }

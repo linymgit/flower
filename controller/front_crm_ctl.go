@@ -20,10 +20,14 @@ func init() {
 		http.POST,
 		frontCrm.InsertCrm,
 	)
-
+	router.AddRoute(
+		"/crm/add",
+		http.OPTIONS,
+		frontCrm.InsertCrm,
+	)
 }
 
-func (fC *FrontCrm)InsertCrm(ctx *fasthttp.RequestCtx, req entity.AddCrmReq)(rsp *result.Result){
+func (fC *FrontCrm) InsertCrm(ctx *fasthttp.RequestCtx, req entity.AddCrmReq) (rsp *result.Result) {
 	ok, err := service.CrmSrv.InsertCrm(req)
 	if err != nil {
 		rsp = result.DatabaseError
