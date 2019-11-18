@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	corsAllowHeaders     = "Content-Type, Content-Length, Accept-Encoding, x-token, Authorization, accept, origin, Cache-Control, x-req-id"
+	corsAllowHeaders     = "Content-Type, Content-Length, Accept-Encoding, x-token, f-token, Authorization, accept, origin, Cache-Control, x-req-id"
 	corsAllowMethods     = "HEAD,GET,POST,PUT,DELETE,OPTIONS"
 	corsAllowOrigin      = "*"
 	corsAllowCredentials = "true"
