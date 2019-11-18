@@ -50,7 +50,7 @@ type NewArticleReq struct {
 	Summary   string `json:"summary"`
 	Content   string `json:"content"`
 	States    int    `json:"states"`
-	Sort      int    `json:"sort" xorm:"not null INT(11)"`
+	Sort      int    `json:"sort"`
 }
 
 type NewArticleRsp struct {
