@@ -6,24 +6,30 @@ const (
 )
 
 const (
-	ProdCategoryShow int = iota
-	ProdCategoryHide
+	ProdCategoryHide int = iota
+	ProdCategoryShow
 )
 
 const (
-	ProdOnline int = iota
-	ProdOffline
+	ProdOffline int = iota
+	ProdOnline
 	ProdAll
 )
 
 const (
-	AdOnline int = iota
-	AdOffline
+	AdOffline int = iota
+	AdOnline
 )
 
 const (
 	AdNormal int = iota
 	AdDeleted
+)
+
+
+const(
+	ArticleOnline int = iota
+	ArticleOffline
 )
 
 const IndexShow = 1

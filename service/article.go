@@ -207,7 +207,7 @@ func (ac *ArticleService) DeleteArticle(id int64) (ok bool, err error) {
 }
 
 func (ac *ArticleService) ModifyArticle(query *entity.ModifyArticleReq) (ok bool, err error) {
-	cols := []string{}
+	cols := []string{"states"}
 	if query.TypeId > 0 {
 		cols = append(cols, "type_id")
 	}
@@ -252,6 +252,7 @@ func (ac *ArticleService) ModifyArticle(query *entity.ModifyArticleReq) (ok bool
 		KeyWord:   query.KeyWord,
 		Summary:   query.Summary,
 		Content:   query.Content,
+		States:    query.States,
 		Sort:      query.Sort,
 	})
 	if err != nil {

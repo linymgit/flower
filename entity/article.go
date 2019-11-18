@@ -89,6 +89,7 @@ type ModifyArticleReq struct {
 	KeyWord   string `json:"key_word"`
 	Summary   string `json:"summary"`
 	Content   string `json:"content"`
+	States    int    `json:"states"`
 	Sort      int    `json:"sort" xorm:"not null INT(11)"`
 }
 
