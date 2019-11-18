@@ -20,4 +20,5 @@ type Article struct {
 	Sort       int       `json:"sort" xorm:"not null INT(11)"`
 	SaveTime   time.Time `json:"save_time" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
 	UpdateTime time.Time `json:"-" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
+	TypeName   string    `json:"type_name,omitempty" xorm:"-"`
 }

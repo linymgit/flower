@@ -197,6 +197,14 @@ func (ac *Article) ListArticle(ctx *fasthttp.RequestCtx, req *entity.ListArticle
 		resp = result.DatabaseError
 		return
 	}
+	id2nameMap, err := service.ArticleSrv.TypeId2Name()
+	if err != nil {
+		resp = result.DatabaseError
+		return
+	}
+	for k := range as {
+		as[k].TypeName = id2nameMap[as[k].TypeId]
+	}
 	resp = result.NewSuccess(
 		&entity.ListArticleRsp{
 			Page: &entity.Page{

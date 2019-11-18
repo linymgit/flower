@@ -275,3 +275,18 @@ func (ac *ArticleService) DeleteAricleTypeById(id int)(isParent,ok bool, err err
 	ok = affected == 1
 	return
 }
+
+
+func (ac *ArticleService) TypeId2Name() (id2nameMap map[int]string, err error) {
+	rows, err := mysql.Db.Cols("id", "type_name").Rows(&gen.ArticleType{})
+	bean := new(gen.ArticleType)
+	id2nameMap = make(map[int]string)
+	for rows.Next() {
+		err = rows.Scan(bean)
+		if err != nil {
+			return
+		}
+		id2nameMap[bean.Id] = bean.TypeName
+	}
+	return
+}
