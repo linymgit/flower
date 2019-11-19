@@ -2,6 +2,7 @@ package controller
 
 import (
 	"flower/entity"
+	"flower/handler"
 	"flower/http"
 	"flower/result"
 	"flower/router"
@@ -32,6 +33,7 @@ func init() {
 		"/product/get",
 		http.POST_AND_OPTIONS,
 		fP.GetProduct,
+		handler.Pv4Product,
 	)
 }
 
@@ -42,7 +44,7 @@ func (fP *FrontProduct) ListProduct(ctx *fasthttp.RequestCtx, req *entity.FrontL
 		rsp = result.DatabaseError
 		return
 	}
-	vos := make([]*entity.FrontListProductVo, total)
+	vos := make([]*entity.FrontListProductVo, len(ps))
 	for k := range ps {
 		vos[k] = &entity.FrontListProductVo{
 			Id:       ps[k].Id,
