@@ -16,7 +16,7 @@ func (i *IndexService) ListIndexAd(query *entity.IndexReq) (ads []*gen.Ad, total
 	ads = make([]*gen.Ad, 0)
 	session := mysql.Db.NewSession()
 	defer session.Close()
-	total, err = session.Where("postion_id=?", state.AdIndex).Asc("save_time").Limit(query.Page.PageSize, query.Page.DbPageIndex()).FindAndCount(&ads)
+	total, err = session.Where("postion_id=? and state=?", state.AdIndex, state.AdOnline).Asc("save_time").Limit(query.Page.PageSize, query.Page.DbPageIndex()).FindAndCount(&ads)
 	return
 }
 
