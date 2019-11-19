@@ -17,35 +17,20 @@ func init() {
 
 	router.AddRoute(
 		"/product/list",
-		http.POST,
-		fP.ListProduct,
-	)
-	router.AddRoute(
-		"/product/list",
-		http.OPTIONS,
+		http.POST_AND_OPTIONS,
 		fP.ListProduct,
 	)
 
 	router.AddRoute(
 		"/product/category/list",
-		http.POST,
-		fP.ListCategory,
-	)
-	router.AddRoute(
-		"/product/category/list",
-		http.OPTIONS,
+		http.POST_AND_OPTIONS,
 		fP.ListCategory,
 	)
 
 	//根据产品详情
 	router.AddRoute(
 		"/product/get",
-		http.POST,
-		fP.GetProduct,
-	)
-	router.AddRoute(
-		"/product/get",
-		http.OPTIONS,
+		http.POST_AND_OPTIONS,
 		fP.GetProduct,
 	)
 }
@@ -57,6 +42,15 @@ func (fP *FrontProduct) ListProduct(ctx *fasthttp.RequestCtx, req *entity.FrontL
 		rsp = result.DatabaseError
 		return
 	}
+	vos := make([]*entity.FrontListProductVo, total)
+	for k := range ps {
+		vos[k] = &entity.FrontListProductVo{
+			Id:       ps[k].Id,
+			Name:     ps[k].Name,
+			Intro:    ps[k].Intro,
+			CoverUrl: ps[k].CoverUrl,
+		}
+	}
 	rsp = result.NewSuccess(
 		&entity.FrontListProductRsp{
 			Page: &entity.Page{
@@ -64,7 +58,7 @@ func (fP *FrontProduct) ListProduct(ctx *fasthttp.RequestCtx, req *entity.FrontL
 				PageIndex: req.Page.PageIndex,
 				Total:     total,
 			},
-			Ps: ps,
+			Ps: vos,
 		})
 	return
 }

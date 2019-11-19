@@ -13,13 +13,33 @@ var FrontProdSrv = &FrontProdService{}
 type FrontProdService struct {
 }
 
-func (fP FrontProdService) ListCategory() (categories []*entity.FrontCategory, err error){
+func (fP FrontProdService) ListCategory() (categories []*entity.FrontCategory, err error) {
 	categories = make([]*entity.FrontCategory, 0)
-	err = mysql.Db.Table(&gen.ProductCategory{}).Where("states = ?",state.ProdCategoryShow).Cols("id","name").Asc("sort").Find(&categories)
+
+	session := mysql.Db.Table(&gen.ProductCategory{}).Asc("id").Where(builder.Eq{"states": state.ProdCategoryShow})
+
+	pIds := []int{}
+	rows, err := mysql.Db.Where("parent_id>?", 0).Cols("parent_id").Rows(&gen.ProductCategory{})
+	if err != nil {
+	}
+	defer rows.Close()
+	bean := new(gen.ProductCategory)
+	for rows.Next() {
+		err = rows.Scan(bean)
+		if err != nil {
+			return
+		}
+		pIds = append(pIds, bean.ParentId)
+	}
+	if len(pIds) > 0 {
+		session = session.NotIn("id", pIds)
+	}
+
+	err = session.Cols("id", "name").Find(&categories)
 	return
 }
 
-func (fP FrontProdService) ListProduct(query *entity.FrontListProductReq) (ps []*gen.Product, total int64, err error){
+func (fP FrontProdService) ListProduct(query *entity.FrontListProductReq) (ps []*gen.Product, total int64, err error) {
 	session := mysql.Db.NewSession()
 	defer session.Close()
 	ps = make([]*gen.Product, 0)
@@ -35,17 +55,17 @@ func (fP FrontProdService) ListProduct(query *entity.FrontListProductReq) (ps []
 		desc = append(desc, "update_time")
 	}
 	if query.IsIndexShow {
-		cond = cond.And(builder.Eq{"index_show":state.IndexShow})
+		cond = cond.And(builder.Eq{"index_show": state.IndexShow})
 	}
 	if query.CategoryId > 0 {
-		cond = cond.And(builder.Eq{"category_id":query.CategoryId})
+		cond = cond.And(builder.Eq{"category_id": query.CategoryId})
 	}
 	// 搜索TODO
 	total, err = session.Where(cond).Desc(desc...).Limit(query.Page.PageSize, query.Page.DbPageIndex()).FindAndCount(&ps)
 	return
 }
 
-func (fP FrontProdService) GetProduct(id int64) (p *gen.Product,ok bool, err error){
+func (fP FrontProdService) GetProduct(id int64) (p *gen.Product, ok bool, err error) {
 	session := mysql.Db.NewSession()
 	defer session.Close()
 	p = &gen.Product{}

@@ -11,9 +11,17 @@ type FrontListProductReq struct {
 	Page        *Page  `json:"page"`
 }
 
+type FrontListProductVo struct {
+	Id       int64  `json:"id"`
+	Name     string `json:"name"`
+	Intro    string `json:"intro"`
+	CoverUrl string `json:"cover_url"`
+}
+
 type FrontListProductRsp struct {
-	Page *Page          `json:"page"`
-	Ps   []*gen.Product `json:"ps"`
+	Page *Page `json:"page"`
+	//Ps   []*gen.Product `json:"ps"`
+	Ps []*FrontListProductVo `json:"ps"`
 }
 
 type FrontCategory struct {
@@ -26,7 +34,7 @@ type FrontListCategoryRsp struct {
 }
 
 type FrontGetProductReq struct {
-	Id   int64    `json:"id"`
+	Id int64 `json:"id"`
 }
 
 type FrontGetProductRsp struct {
