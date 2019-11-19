@@ -1,9 +1,12 @@
 package controller
 
 import (
+	"flower/entity"
+	"flower/handler"
 	"flower/http"
 	"flower/result"
 	"flower/router"
+	"flower/service"
 	"github.com/valyala/fasthttp"
 )
 
@@ -16,33 +19,114 @@ func init() {
 	router.AddRoute(
 		"/admin/business/partners/list",
 		http.POST,
-		bp.ListBusinessPartners,
+		bp.AdminListBusinessPartners,
+		handler.CheckAdmin,
 	)
 	router.AddRoute(
 		"/admin/business/partners/delete",
 		http.POST,
-		bp.ListBusinessPartners,
+		bp.DeleteBusinessPartnersById,
+		handler.CheckAdmin,
 	)
 	router.AddRoute(
 		"/admin/business/partners/add",
 		http.POST,
-		bp.ListBusinessPartners,
+		bp.AddBusinessPartners,
+		handler.CheckAdmin,
 	)
 	router.AddRoute(
 		"/admin/business/partners/modify",
 		http.POST,
-		bp.ListBusinessPartners,
+		bp.ModifyBusinessPartners,
+		handler.CheckAdmin,
 	)
 
 	//前台
 	router.AddRoute(
-		"/business/partners/list",
-		http.POST,
-		bp.ListBusinessPartners,
+		"/index/business/partners/list",
+		http.POST_AND_OPTIONS,
+		bp.FrontListBusinessPartners,
 	)
 
 }
 
-func (bp *BusinessPartners) ListBusinessPartners(ctx *fasthttp.RequestCtx) (resp *result.Result) {
+func (bp *BusinessPartners) AdminListBusinessPartners(ctx *fasthttp.RequestCtx, req *entity.BusinessPartnersPageReq) (rsp *result.Result) {
+	bps, total, err := service.BusinessPartnersSrv.AdminListBusinessPartners(req)
+	if err != nil {
+		rsp = result.DatabaseError
+		return
+	}
+	rsp = result.NewSuccess(
+		&entity.AdminBusinessPartnersRsp{
+			Page: &entity.Page{
+				PageSize:  req.Page.PageSize,
+				PageIndex: req.Page.PageIndex,
+				Total:     total,
+			},
+			Bps:bps,
+		})
+	return
+}
+func (bp *BusinessPartners) DeleteBusinessPartnersById(ctx *fasthttp.RequestCtx, req *entity.BusinessPartnersIdReq) (rsp *result.Result) {
+	ok, err := service.BusinessPartnersSrv.DeleteBusinessPartnersById(req.Id)
+	if err != nil {
+		rsp = result.DatabaseError
+		return
+	}
+	if !ok {
+		rsp = result.NewError(result.RequestParamEc, "不存在这个id")
+		return
+	}
+	rsp = result.NewSuccess("删除成功")
+	return
+}
+func (bp *BusinessPartners) AddBusinessPartners(ctx *fasthttp.RequestCtx, req *entity.BusinessPartnersReq) (rsp *result.Result) {
+	ok, err := service.BusinessPartnersSrv.AddBusinessPartners(req)
+	if err != nil {
+		rsp = result.DatabaseError
+		return
+	}
+	if !ok {
+		rsp = result.NewError(result.RequestParamEc, "创建失败")
+		return
+	}
+	rsp = result.NewSuccess("创建成功")
+	return
+}
+func (bp *BusinessPartners) ModifyBusinessPartners(ctx *fasthttp.RequestCtx, req *entity.BusinessPartnersReq) (rsp *result.Result) {
+	ok, err := service.BusinessPartnersSrv.ModifyBusinessPartners(req)
+	if err != nil {
+		rsp = result.DatabaseError
+		return
+	}
+	if !ok {
+		rsp = result.NewError(result.RequestParamEc, "修改失败")
+		return
+	}
+	rsp = result.NewSuccess("修改成功")
+	return
+}
+func (bp *BusinessPartners) FrontListBusinessPartners(ctx *fasthttp.RequestCtx, req *entity.BusinessPartnersPageReq) (rsp *result.Result) {
+	bps, total, err := service.BusinessPartnersSrv.FrontListBusinessPartners(req)
+	if err != nil {
+		rsp = result.DatabaseError
+		return
+	}
+	iBps := make([]*entity.IndexBusinessPartners, total)
+	for k := range iBps {
+		iBps[k] = &entity.IndexBusinessPartners{
+			Id:   bps[k].Id,
+			Logo: bps[k].Logo,
+		}
+	}
+	rsp = result.NewSuccess(
+		&entity.IndexBusinessPartnersRsp{
+			Page: &entity.Page{
+				PageSize:  req.Page.PageSize,
+				PageIndex: req.Page.PageIndex,
+				Total:     total,
+			},
+			Bps:iBps,
+		})
 	return
 }

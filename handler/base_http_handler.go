@@ -4,9 +4,7 @@ import (
 	"encoding/json"
 	"flower/http"
 	error2 "flower/result"
-	"fmt"
 	"github.com/valyala/fasthttp"
-	"net/url"
 	"reflect"
 	"strings"
 )
@@ -76,16 +74,22 @@ func BaseHttpHandler(handler interface{}) fasthttp.RequestHandler {
 			}
 
 			if strings.EqualFold(contentType, http.NormalWithCharset) {
-				body := ctx.Request.Body()
-				values, e := url.ParseQuery(string(body))
-				if e != nil {
-					//TODO
+				//body := ctx.Request.Body()
+				//values, e := url.ParseQuery(string(body))
+				//if e != nil {
+				//}
+				//for k := range values {
+				//	println(k)
+				//	println(values[k])
+				//}
+				//fmt.Print("%#v", values)
+				//TODO
+				bytes, err := json.Marshal(error2.NewError(error2.ParamEc, "目前还不支持这种类型的请求，联系18316471919解决！！！"))
+				if err != nil {
+					// TODO
 				}
-				for k := range values {
-					println(k)
-					println(values[k])
-				}
-				fmt.Print("%#v", values)
+				ctx.Response.SetBodyRaw(bytes)
+				return
 			}
 
 			// 校验参数
