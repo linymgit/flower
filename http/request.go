@@ -8,9 +8,10 @@ type MothodType int32
 
 const (
 	// 请求类型
-	Multipart = "multipart/form-data;"
-	Json      = "application/json"
-	Normal    = "application/x-www-form-urlencoded"
+	Multipart         = "multipart/form-data;"
+	Json              = "application/json"
+	Normal            = "application/x-www-form-urlencoded"
+	NormalWithCharset = "application/x-www-form-urlencoded; charset=UTF-8"
 	// 请求header
 	TokenKey = "f-token"
 	// jwt key
@@ -26,6 +27,8 @@ const (
 	GET MothodType = iota
 	POST
 	DELETE
+	OPTIONS
+	POST_AND_OPTIONS
 )
 
 func GetJwtId(ctx *fasthttp.RequestCtx) (id int64, ok bool) {

@@ -20,10 +20,20 @@ func init() {
 		http.POST,
 		fP.ListProduct,
 	)
+	router.AddRoute(
+		"/product/list",
+		http.OPTIONS,
+		fP.ListProduct,
+	)
 
 	router.AddRoute(
 		"/product/category/list",
 		http.POST,
+		fP.ListCategory,
+	)
+	router.AddRoute(
+		"/product/category/list",
+		http.OPTIONS,
 		fP.ListCategory,
 	)
 
@@ -31,6 +41,11 @@ func init() {
 	router.AddRoute(
 		"/product/get",
 		http.POST,
+		fP.GetProduct,
+	)
+	router.AddRoute(
+		"/product/get",
+		http.OPTIONS,
 		fP.GetProduct,
 	)
 }
@@ -61,12 +76,12 @@ func (fP *FrontProduct) ListCategory(ctx *fasthttp.RequestCtx) (rsp *result.Resu
 		rsp = result.DatabaseError
 		return
 	}
-	rsp = result.NewSuccess(&entity.FrontListCategoryRsp{Categories:categories})
+	rsp = result.NewSuccess(&entity.FrontListCategoryRsp{Categories: categories})
 	return
 }
 
 //获取产品
-func (fP *FrontProduct) GetProduct(ctx *fasthttp.RequestCtx, req *entity.FrontGetProductReq) (rsp *result.Result){
+func (fP *FrontProduct) GetProduct(ctx *fasthttp.RequestCtx, req *entity.FrontGetProductReq) (rsp *result.Result) {
 	p, ok, err := service.FrontProdSrv.GetProduct(req.Id)
 	if err != nil {
 		rsp = result.DatabaseError
@@ -76,6 +91,6 @@ func (fP *FrontProduct) GetProduct(ctx *fasthttp.RequestCtx, req *entity.FrontGe
 		rsp = result.NewError(result.RequestParamEc, "产品不存在")
 		return
 	}
-	rsp = result.NewSuccess(&entity.FrontGetProductRsp{Product:p})
+	rsp = result.NewSuccess(&entity.FrontGetProductRsp{Product: p})
 	return
 }

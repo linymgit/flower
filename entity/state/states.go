@@ -26,10 +26,14 @@ const (
 	AdDeleted
 )
 
-
-const(
+const (
 	ArticleOnline int = iota
 	ArticleOffline
+)
+
+const (
+	AdAll int = iota
+	AdIndex
 )
 
 const IndexShow = 1

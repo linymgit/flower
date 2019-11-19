@@ -40,10 +40,16 @@ func AddRoute(path string, mothodType http.MothodType, handlerFunc interface{}, 
 		if mothodType == http.POST {
 			router.POST(path, httpHandler)
 		}
+		if mothodType == http.OPTIONS {
+			router.OPTIONS(path, httpHandler)
+		}
 		if mothodType == http.DELETE {
 			router.DELETE(path, httpHandler)
 		}
-
+		if mothodType == http.POST_AND_OPTIONS {
+			router.POST(path, httpHandler)
+			router.OPTIONS(path, httpHandler)
+		}
 	})
 }
 

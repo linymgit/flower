@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"flower/http"
 	error2 "flower/result"
+	"fmt"
 	"github.com/valyala/fasthttp"
+	"net/url"
 	"reflect"
 	"strings"
 )
@@ -71,6 +73,19 @@ func BaseHttpHandler(handler interface{}) fasthttp.RequestHandler {
 				if rValue, ok := FillFieldValueByQueryArgs(queryArgs, ft.In(1)); ok {
 					params = []reflect.Value{reflect.ValueOf(ctx), rValue}
 				}
+			}
+
+			if strings.EqualFold(contentType, http.NormalWithCharset) {
+				body := ctx.Request.Body()
+				values, e := url.ParseQuery(string(body))
+				if e != nil {
+					//TODO
+				}
+				for k := range values {
+					println(k)
+					println(values[k])
+				}
+				fmt.Print("%#v", values)
 			}
 
 			// 校验参数
