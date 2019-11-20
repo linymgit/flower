@@ -17,23 +17,13 @@ func init() {
 
 	router.AddRoute(
 		"/article/category/list",
-		http.POST,
-		frontArticle.ListArticlesType,
-	)
-	router.AddRoute(
-		"/article/category/list",
-		http.OPTIONS,
+		http.POST_AND_OPTIONS,
 		frontArticle.ListArticlesType,
 	)
 
 	router.AddRoute(
 		"/article/list",
-		http.POST,
-		frontArticle.ListArticles,
-	)
-	router.AddRoute(
-		"/article/list",
-		http.OPTIONS,
+		http.POST_AND_OPTIONS,
 		frontArticle.ListArticles,
 	)
 }
