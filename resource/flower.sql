@@ -102,6 +102,21 @@ CREATE TABLE IF NOT EXISTS `article_type` (
 -- 数据导出被取消选择。
 
 
+-- 导出  表 flower.business_partners 结构
+CREATE TABLE IF NOT EXISTS `business_partners` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `logo` varchar(256) NOT NULL DEFAULT '0' COMMENT 'logo url',
+  `business_name` varchar(64) NOT NULL DEFAULT '0' COMMENT '企业名称',
+  `intro` varchar(256) NOT NULL DEFAULT '0' COMMENT '企业介绍',
+  `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
+  `save_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='商业合作伙伴';
+
+-- 数据导出被取消选择。
+
+
 -- 导出  表 flower.crm 结构
 CREATE TABLE IF NOT EXISTS `crm` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -143,7 +158,7 @@ CREATE TABLE IF NOT EXISTS `product` (
   `summary` varchar(1024) NOT NULL,
   `states` tinyint(4) NOT NULL COMMENT '0在线 1下线',
   `index_show` tinyint(4) NOT NULL COMMENT '首页推荐 1是 0否',
-  `details_pic_url` varchar(255) NOT NULL,
+  `details_pic_url` varchar(1024) NOT NULL,
   `cover_url` varchar(255) NOT NULL,
   `price` decimal(12,2) NOT NULL,
   `heat` int(11) NOT NULL COMMENT '热度',
@@ -170,6 +185,19 @@ CREATE TABLE IF NOT EXISTS `product_category` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='产品类目';
+
+-- 数据导出被取消选择。
+
+
+-- 导出  表 flower.product_uv 结构
+CREATE TABLE IF NOT EXISTS `product_uv` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `p_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '产品id',
+  `ip` varchar(32) NOT NULL DEFAULT '0' COMMENT '客户端ip',
+  `access_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '访问时间',
+  PRIMARY KEY (`id`),
+  KEY `p_id` (`p_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='统计访问网站的ip';
 
 -- 数据导出被取消选择。
 

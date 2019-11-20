@@ -2,7 +2,9 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
+	"flower/entity/gen"
+	"flower/mysql"
+	"flower/result"
 	"github.com/valyala/fasthttp"
 	"strings"
 )
@@ -18,8 +20,33 @@ func Pv4Product(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 		if err != nil {
 			return
 		}
+		rsp := ctx.Response.Body()
+		r := &result.Result{}
+		err = json.Unmarshal(rsp, r)
+		if err != nil {
+			println("产品详情接口无返回数据")
+			return
+		}
+		if r.Code != result.SUCCESS {
+			println("产品详情接口无数据")
+			return
+		}
 		//加pv
-		fmt.Println(log.Id)
+		_, err = mysql.Db.Exec("UPDATE `product` SET `heat`=`heat`+1 WHERE  `id`=?;",log.Id)
+		if err != nil {
+			print("添加产品pv数据库出错："+err.Error())
+		}
+		//加uv
+		affected, err := mysql.Db.Cols("p_id","ip").InsertOne(&gen.ProductUv{
+			PId: log.Id,
+			Ip:  clientIP(ctx),
+		})
+		if err != nil {
+			println("添加产品uv数据库出错："+err.Error())
+		}
+		if affected != 1 {
+			println("添加产品uv数据库影响行数不等于1："+err.Error())
+		}
 	})
 }
 
