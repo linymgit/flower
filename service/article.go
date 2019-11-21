@@ -23,6 +23,10 @@ func (ac *ArticleService) ListArticleType(query *entity.ListArticleTypeReq) (ats
 	session := mysql.Db.NewSession()
 	defer session.Close()
 	cond := builder.NewCond()
+
+	//不展示新闻分类
+	cond.And(builder.Neq{"id":config.News_Type_Id})
+
 	if query.Id > 0 {
 		cond = cond.And(builder.Eq{"id": query.Id})
 	} else {

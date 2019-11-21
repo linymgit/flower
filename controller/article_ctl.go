@@ -96,7 +96,7 @@ func init() {
 	)
 }
 
-//获取产品分类列表
+//获取文章分类列表
 func (ac *Article) ListArticleType(ctx *fasthttp.RequestCtx, req *entity.ListArticleTypeReq) (resp *result.Result) {
 	ats, total, err := service.ArticleSrv.ListArticleType(req)
 	if err != nil {
