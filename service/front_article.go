@@ -4,6 +4,7 @@ import (
 	"flower/entity"
 	"flower/entity/gen"
 	"flower/mysql"
+	"xorm.io/builder"
 )
 
 var FrontArticleSrv = &FrontArticleService{}
@@ -32,5 +33,17 @@ func (fA FrontArticleService) ListArticleType() (categories []*entity.FrontArtic
 	}
 
 	err = session.Find(&categories)
+	return
+}
+
+func (fA FrontArticleService) ListArticles(req *entity.FrontArticleListReq) (al []*gen.Article, total int64, err error) {
+	session := mysql.Db.NewSession()
+	defer session.Close()
+	al = make([]*gen.Article, 0)
+	if req.TypeId > 0 {
+		session = session.Where(builder.Eq{"type_id":req.TypeId})
+	}
+	// 搜索TODO
+	total, err = session.Desc("update_time").Limit(req.Page.PageSize, req.Page.DbPageIndex()).FindAndCount(&al)
 	return
 }

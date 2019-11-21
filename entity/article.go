@@ -90,9 +90,27 @@ type ModifyArticleReq struct {
 	Summary   string `json:"summary"`
 	Content   string `json:"content"`
 	States    int    `json:"states"`
-	Sort      int    `json:"sort" xorm:"not null INT(11)"`
+	Sort      int    `json:"sort"`
 }
 
 type DeleteAricleTypeByIdReq struct {
 	Id int `json:"id" validate:"required"`
+}
+
+type FrontArticleListReq struct {
+	TypeId int   `json:"type_id"`
+	Page   *Page `json:"page"`
+}
+
+type FrontArticleIntro struct {
+	Id      int64  `json:"id"`
+	Title   string `json:"title"`
+	Author  string `json:"author"`
+	Preview string `json:"preview"`
+	Summary string `json:"summary"`
+}
+
+type FrontArticleListRsp struct {
+	Page *Page                `json:"page"`
+	List []*FrontArticleIntro `json:"list"`
 }

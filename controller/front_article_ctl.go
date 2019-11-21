@@ -38,6 +38,30 @@ func (fA *FrontArticle) ListArticlesType(ctx *fasthttp.RequestCtx) (rsp *result.
 	return
 }
 
-func (fA *FrontArticle) ListArticles(ctx *fasthttp.RequestCtx, req entity.AddCrmReq) (rsp *result.Result) {
+func (fA *FrontArticle) ListArticles(ctx *fasthttp.RequestCtx, req *entity.FrontArticleListReq) (rsp *result.Result) {
+	al, total, err := service.FrontArticleSrv.ListArticles(req)
+	if err != nil {
+		rsp = result.DatabaseError
+		return
+	}
+	vos := make([]*entity.FrontArticleIntro, len(al))
+	for k := range al {
+		vos[k] = &entity.FrontArticleIntro{
+			Id:      al[k].Id,
+			Title:   al[k].Title,
+			Author:  al[k].Author,
+			Preview: al[k].Preview,
+			Summary: al[k].Summary,
+		}
+	}
+	rsp = result.NewSuccess(
+		&entity.FrontArticleListRsp{
+			Page: &entity.Page{
+				PageSize:  req.Page.PageSize,
+				PageIndex: req.Page.PageIndex,
+				Total:     total,
+			},
+			List:vos,
+		})
 	return
 }

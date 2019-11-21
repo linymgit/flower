@@ -19,9 +19,8 @@ type FrontListProductVo struct {
 }
 
 type FrontListProductRsp struct {
-	Page *Page `json:"page"`
-	//Ps   []*gen.Product `json:"ps"`
-	Ps []*FrontListProductVo `json:"ps"`
+	Page *Page                 `json:"page"`
+	Ps   []*FrontListProductVo `json:"ps"`
 }
 
 type FrontCategory struct {
