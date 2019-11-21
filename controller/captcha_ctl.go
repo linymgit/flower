@@ -14,7 +14,7 @@ type Cap struct {
 
 func init() {
 	c := &Cap{}
-	router.AddRoute("/captcha", http.GET, c.get)
+	router.AddRoute("/captcha", http.GET_AND_OPTIONS, c.get)
 }
 
 func (c *Cap) get(ctx *fasthttp.RequestCtx) (resp *result.Result) {

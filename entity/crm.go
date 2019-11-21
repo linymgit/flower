@@ -21,6 +21,8 @@ type CrmDeleteReq struct {
 }
 
 type AddCrmReq struct {
+	Id          string `json:"id"` //验证码的标识id
+	VerifyValue string `json:"verify_value"`
 	Name        string `json:"name" validate:"required"`
 	Email       string `json:"email"  validate:"required"`
 	Phone       string `json:"phone" validate:"required"`

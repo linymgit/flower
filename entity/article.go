@@ -114,3 +114,21 @@ type FrontArticleListRsp struct {
 	Page *Page                `json:"page"`
 	List []*FrontArticleIntro `json:"list"`
 }
+
+type ArticleNav struct {
+	Time  string `json:"time"`
+	Count int64  `json:"count"`
+}
+
+type GetNewsTitlesReq struct {
+	Time string `json:"time"`
+}
+
+type GetNewsTitlesInfo struct {
+	Id    int64  `json:"id"`
+	Title string `json:"title"`
+}
+
+type GetNewsTitlesResp struct {
+	Titles GetNewsTitlesInfo `json:"titles"`
+}

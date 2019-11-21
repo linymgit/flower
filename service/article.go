@@ -1,9 +1,12 @@
 package service
 
 import (
+	"flower/config"
 	"flower/entity"
 	"flower/entity/gen"
 	"flower/mysql"
+	"strconv"
+	"strings"
 	"sync"
 	"time"
 	"xorm.io/builder"
@@ -22,7 +25,7 @@ func (ac *ArticleService) ListArticleType(query *entity.ListArticleTypeReq) (ats
 	cond := builder.NewCond()
 	if query.Id > 0 {
 		cond = cond.And(builder.Eq{"id": query.Id})
-	}else{
+	} else {
 		cond = cond.And(builder.Eq{"parent_id": query.ParentId})
 	}
 	if query.Page == nil {
@@ -262,7 +265,7 @@ func (ac *ArticleService) ModifyArticle(query *entity.ModifyArticleReq) (ok bool
 	return
 }
 
-func (ac *ArticleService) DeleteAricleTypeById(id int)(isParent,ok bool, err error) {
+func (ac *ArticleService) DeleteAricleTypeById(id int) (isParent, ok bool, err error) {
 	isParent, err = mysql.Db.Where("parent_id = ?", id).Cols("id").Exist(&gen.ArticleType{})
 	if err != nil {
 		return
@@ -276,7 +279,6 @@ func (ac *ArticleService) DeleteAricleTypeById(id int)(isParent,ok bool, err err
 	return
 }
 
-
 func (ac *ArticleService) TypeId2Name() (id2nameMap map[int]string, err error) {
 	rows, err := mysql.Db.Cols("id", "type_name").Rows(&gen.ArticleType{})
 	bean := new(gen.ArticleType)
@@ -287,6 +289,66 @@ func (ac *ArticleService) TypeId2Name() (id2nameMap map[int]string, err error) {
 			return
 		}
 		id2nameMap[bean.Id] = bean.TypeName
+	}
+	return
+}
+
+func (ac *ArticleService) GetArticle(id int64) (a *gen.Article, ok bool, err error) {
+	session := mysql.Db.NewSession()
+	defer session.Close()
+	a = &gen.Article{}
+	ok, err = mysql.Db.ID(id).Get(a)
+	if err != nil {
+		return
+	}
+	return
+}
+
+func (ac *ArticleService) GetNewsNav() (navs []entity.ArticleNav, err error) {
+	resultsSlice, err := mysql.Db.Query("select DATE_FORMAT(save_time,'%Y-%M') time,count(id) count from article where type_id = ? group by time;", config.News_Type_Id)
+	if err != nil {
+		return
+	}
+	navs = make([]entity.ArticleNav, 0)
+	for e := range resultsSlice {
+		nav := entity.ArticleNav{}
+		rs := resultsSlice[e]
+		nav.Time = string(rs["time"])
+		count, e := strconv.ParseInt(string(rs["count"]), 10, 64)
+		if e != nil {
+			return
+		}
+		nav.Count = count
+		navs = append(navs, nav)
+	}
+
+	entity.SortArticleNavs(navs, func(p, q *entity.ArticleNav) bool {
+		pt := p.Time
+		qt := q.Time
+		spP := strings.Split(pt, "-")
+		spQ := strings.Split(qt, "-")
+		if spP[0] == spQ[0] {
+			return entity.MonthSort[spP[1]] > entity.MonthSort[spQ[1]]
+		} else {
+			return spP[0] > spQ[0]
+		}
+		return false
+	})
+	return
+}
+
+func (ac *ArticleService) GetNewsTitles(req *entity.GetNewsTitlesReq) (titles []entity.GetNewsTitlesInfo, err error) {
+	articles := make([]gen.Article, 0)
+	err = mysql.Db.Cols("id", "title").Where("type_id = ? AND DATE_FORMAT(save_time,'%Y-%M')=?", config.News_Type_Id, req.Time).Find(&articles)
+	if err != nil {
+		return
+	}
+	titles = make([]entity.GetNewsTitlesInfo, len(articles))
+	for k := range articles {
+		titles[k] = entity.GetNewsTitlesInfo{
+			Id:    articles[k].Id,
+			Title: articles[k].Title,
+		}
 	}
 	return
 }

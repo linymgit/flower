@@ -8,3 +8,7 @@ type FrontArticleType struct {
 type FrontArticleTypeRsp struct {
 	Categories []*FrontArticleType `json:"categories"`
 }
+
+type FrontGetArticleReq struct {
+	Id int64 `json:"id"`
+}

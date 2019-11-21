@@ -29,6 +29,7 @@ const (
 	DELETE
 	OPTIONS
 	POST_AND_OPTIONS
+	GET_AND_OPTIONS
 )
 
 func GetJwtId(ctx *fasthttp.RequestCtx) (id int64, ok bool) {

@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"flower/captcha"
 	"flower/entity"
 	"flower/http"
 	"flower/result"
@@ -24,6 +25,11 @@ func init() {
 }
 
 func (fC *FrontCrm) InsertCrm(ctx *fasthttp.RequestCtx, req *entity.AddCrmReq) (rsp *result.Result) {
+	verifyResult := captcha.VerifyCaptcha(req.Id, req.VerifyValue)
+	if !verifyResult {
+		rsp = result.CaptchaError
+		return
+	}
 	ok, err := service.CrmSrv.InsertCrm(req)
 	if err != nil {
 		rsp = result.DatabaseError

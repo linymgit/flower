@@ -50,6 +50,10 @@ func AddRoute(path string, mothodType http.MothodType, handlerFunc interface{}, 
 			router.POST(path, httpHandler)
 			router.OPTIONS(path, httpHandler)
 		}
+		if mothodType == http.GET_AND_OPTIONS{
+			router.GET(path, httpHandler)
+			router.OPTIONS(path, httpHandler)
+		}
 	})
 }
 
