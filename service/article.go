@@ -25,7 +25,7 @@ func (ac *ArticleService) ListArticleType(query *entity.ListArticleTypeReq) (ats
 	cond := builder.NewCond()
 
 	//不展示新闻分类
-	cond.And(builder.Neq{"id":config.News_Type_Id})
+	cond = cond.And(builder.Neq{"id":config.News_Type_Id})
 
 	if query.Id > 0 {
 		cond = cond.And(builder.Eq{"id": query.Id})
