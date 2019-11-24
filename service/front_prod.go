@@ -5,6 +5,7 @@ import (
 	"flower/entity/gen"
 	"flower/entity/state"
 	"flower/mysql"
+	"strconv"
 	"xorm.io/builder"
 )
 
@@ -74,6 +75,25 @@ func (fP FrontProdService) GetProduct(id int64) (p *gen.Product, ok bool, err er
 	ok, err = mysql.Db.ID(id).Get(p)
 	if err != nil {
 		return
+	}
+	return
+}
+
+func (fP FrontProdService) GetHotTop6Product() (i2sMap map[int64]int, err error) {
+	session := mysql.Db.NewSession()
+	defer session.Close()
+	r, err := mysql.Db.Table("product").Desc("heat").Cols("id").Limit(6, 0).Query()
+	if err != nil {
+		return
+	}
+	i2sMap = make(map[int64]int)
+	for k := range r {
+		id := string(r[k]["id"])
+		i, e := strconv.ParseInt(id, 10, 64)
+		if e != nil {
+			return
+		}
+		i2sMap[i] = k+1
 	}
 	return
 }

@@ -20,4 +20,5 @@ type Product struct {
 	UpdateTime    time.Time `json:"update_time" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
 	SaveTime      time.Time `json:"-" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
 	CategoryName  string    `json:"category_name,omitempty" xorm:"-"`
+	HeatSort      int       `json:"heat_sort" xorm:"-"`
 }

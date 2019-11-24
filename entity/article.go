@@ -120,6 +120,12 @@ type ArticleNav struct {
 	Count int64  `json:"count"`
 }
 
+type ArticleNavV2 struct {
+	Year  string `json:"year"`
+	Month string `json:"month"`
+	Count int64  `json:"count"`
+}
+
 type GetNewsTitlesReq struct {
 	Time string `json:"time"`
 }

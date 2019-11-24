@@ -87,6 +87,10 @@ func (fP *FrontProduct) GetProduct(ctx *fasthttp.RequestCtx, req *entity.FrontGe
 		rsp = result.NewError(result.RequestParamEc, "产品不存在")
 		return
 	}
+	i2sMap, err := service.FrontProdSrv.GetHotTop6Product()
+	if err == nil {
+		p.HeatSort = i2sMap[p.Id]
+	}
 	rsp = result.NewSuccess(&entity.FrontGetProductRsp{Product: p})
 	return
 }

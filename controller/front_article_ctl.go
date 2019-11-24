@@ -41,6 +41,11 @@ func init() {
 		http.POST_AND_OPTIONS,
 		frontArticle.GetNewsNav,
 	)
+	router.AddRoute(
+		"/news/nav/v2",
+		http.POST_AND_OPTIONS,
+		frontArticle.GetNewsNavV2,
+	)
 
 	router.AddRoute(
 		"/news/titles/get",
@@ -104,6 +109,16 @@ func (fa *FrontArticle) GetArticle(ctx *fasthttp.RequestCtx, req *entity.FrontGe
 
 func (fa *FrontArticle) GetNewsNav(ctx *fasthttp.RequestCtx) (rsp *result.Result) {
 	navs, err := service.ArticleSrv.GetNewsNav()
+	if err != nil {
+		rsp = result.DatabaseError
+		return
+	}
+	rsp = result.NewSuccess(navs)
+	return
+}
+
+func (fa *FrontArticle) GetNewsNavV2(ctx *fasthttp.RequestCtx) (rsp *result.Result) {
+	navs, err := service.ArticleSrv.GetNewsNavV2()
 	if err != nil {
 		rsp = result.DatabaseError
 		return

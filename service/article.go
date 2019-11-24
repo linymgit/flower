@@ -341,6 +341,38 @@ func (ac *ArticleService) GetNewsNav() (navs []entity.ArticleNav, err error) {
 	return
 }
 
+func (ac *ArticleService) GetNewsNavV2() (navs []entity.ArticleNavV2, err error) {
+	resultsSlice, err := mysql.Db.Query("select DATE_FORMAT(save_time,'%Y-%M') time,count(id) count from article where type_id = ? group by time;", config.News_Type_Id)
+	if err != nil {
+		return
+	}
+	navs = make([]entity.ArticleNavV2, 0)
+	for e := range resultsSlice {
+		nav := entity.ArticleNavV2{}
+		rs := resultsSlice[e]
+		s := string(rs["time"])
+		split := strings.Split(s, "-")
+		nav.Year = split[0]
+		nav.Month = split[1]
+		count, e := strconv.ParseInt(string(rs["count"]), 10, 64)
+		if e != nil {
+			return
+		}
+		nav.Count = count
+		navs = append(navs, nav)
+	}
+
+	entity.SortArticleNavsV2(navs, func(p, q *entity.ArticleNavV2) bool {
+		if p.Year != q.Year {
+			return p.Year > q.Year
+		}else{
+			return entity.MonthSort[p.Month] > entity.MonthSort[q.Month]
+		}
+		return false
+	})
+	return
+}
+
 func (ac *ArticleService) GetNewsTitles(req *entity.GetNewsTitlesReq) (titles []entity.GetNewsTitlesInfo, err error) {
 	articles := make([]gen.Article, 0)
 	err = mysql.Db.Cols("id", "title").Where("type_id = ? AND DATE_FORMAT(save_time,'%Y-%M')=?", config.News_Type_Id, req.Time).Find(&articles)
