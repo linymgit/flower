@@ -45,6 +45,8 @@ func (fA FrontArticleService) ListArticles(req *entity.FrontArticleListReq) (al 
 	al = make([]*gen.Article, 0)
 	if req.TypeId > 0 {
 		session = session.Where(builder.Eq{"type_id":req.TypeId})
+	}else{
+		session = session.Where(builder.Neq{"type_id":config.News_Type_Id})
 	}
 	// 搜索TODO
 	total, err = session.Desc("update_time").Limit(req.Page.PageSize, req.Page.DbPageIndex()).FindAndCount(&al)
