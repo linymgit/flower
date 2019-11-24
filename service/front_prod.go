@@ -19,7 +19,7 @@ func (fP FrontProdService) ListCategory() (categories []*entity.FrontCategory, e
 	session := mysql.Db.Table(&gen.ProductCategory{}).Asc("id").Where(builder.Eq{"states": state.ProdCategoryShow})
 
 	pIds := []int{}
-	rows, err := mysql.Db.Where("parent_id>?", 0).Cols("parent_id").Rows(&gen.ProductCategory{})
+	rows, err := mysql.Db.Cols("parent_id").Distinct("parent_id").Where("parent_id>?", 0).Rows(&gen.ProductCategory{})
 	if err != nil {
 	}
 	defer rows.Close()
@@ -31,7 +31,9 @@ func (fP FrontProdService) ListCategory() (categories []*entity.FrontCategory, e
 		}
 		pIds = append(pIds, bean.ParentId)
 	}
-	if len(pIds) > 0 {
+	if len(pIds) == 1 {
+		session = session.Where(builder.Neq{"id":pIds[0]})
+	}else if len(pIds) > 0 {
 		session = session.NotIn("id", pIds)
 	}
 
