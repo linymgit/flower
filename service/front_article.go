@@ -1,6 +1,7 @@
 package service
 
 import (
+	"flower/config"
 	"flower/entity"
 	"flower/entity/gen"
 	"flower/mysql"
@@ -18,7 +19,7 @@ func (fA FrontArticleService) ListArticleType() (categories []*entity.FrontArtic
 	session := mysql.Db.Table(&gen.ArticleType{}).Asc("id").Cols("id", "type_name")
 
 	pIds := []int{}
-	rows, err := mysql.Db.Where("parent_id>?", 0).Cols("parent_id").Rows(&gen.ArticleType{})
+	rows, err := mysql.Db.Where("parent_id>?", 0).Distinct("parent_id").Cols("parent_id").Rows(&gen.ArticleType{})
 	bean := new(gen.ArticleType)
 	for rows.Next() {
 		err = rows.Scan(bean)
@@ -28,11 +29,13 @@ func (fA FrontArticleService) ListArticleType() (categories []*entity.FrontArtic
 		pIds = append(pIds, bean.ParentId)
 	}
 	defer rows.Close()
-	if len(pIds) > 0 {
+	if len(pIds) == 1 {
+		session = session.Where(builder.Neq{"id": pIds[0]})
+	}else if len(pIds) > 0 {
 		session = session.NotIn("id", pIds)
 	}
 
-	err = session.Find(&categories)
+	err = session.And("id !=?",config.News_Type_Id).Find(&categories)
 	return
 }
 
