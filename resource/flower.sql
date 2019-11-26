@@ -81,7 +81,8 @@ CREATE TABLE IF NOT EXISTS `article` (
   `save_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `ids_clicks` (`clicks`)
+  KEY `ids_clicks` (`clicks`),
+  KEY `ids_type_id` (`type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文章';
 
 -- 数据导出被取消选择。
@@ -135,6 +136,20 @@ CREATE TABLE IF NOT EXISTS `crm` (
 -- 数据导出被取消选择。
 
 
+-- 导出  表 flower.news_time_nav 结构
+CREATE TABLE IF NOT EXISTS `news_time_nav` (
+  `year` smallint(5) unsigned NOT NULL,
+  `moth` tinyint(2) unsigned NOT NULL,
+  `count` int(11) NOT NULL,
+  `article_titles` text NOT NULL COMMENT '文章标题列表',
+  `save_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`year`,`moth`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='新闻发布时间导航';
+
+-- 数据导出被取消选择。
+
+
 -- 导出  表 flower.partner 结构
 CREATE TABLE IF NOT EXISTS `partner` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -154,11 +169,11 @@ CREATE TABLE IF NOT EXISTS `partner` (
 CREATE TABLE IF NOT EXISTS `product` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL COMMENT '商品名称',
-  `intro` varchar(255) NOT NULL COMMENT '简介',
+  `intro` varchar(1024) NOT NULL COMMENT '简介',
   `summary` varchar(1024) NOT NULL,
   `states` tinyint(4) NOT NULL COMMENT '0在线 1下线',
   `index_show` tinyint(4) NOT NULL COMMENT '首页推荐 1是 0否',
-  `details_pic_url` varchar(1024) NOT NULL,
+  `details_pic_url` varchar(1024) DEFAULT NULL,
   `cover_url` varchar(255) NOT NULL,
   `price` decimal(12,2) NOT NULL,
   `heat` int(11) NOT NULL COMMENT '热度',
