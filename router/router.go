@@ -48,11 +48,11 @@ func AddRoute(path string, mothodType http.MothodType, handlerFunc interface{}, 
 		}
 		if mothodType == http.POST_AND_OPTIONS {
 			router.POST(path, httpHandler)
-			router.OPTIONS(path, httpHandler)
+			router.OPTIONS(path, handler.Options)
 		}
 		if mothodType == http.GET_AND_OPTIONS{
 			router.GET(path, httpHandler)
-			router.OPTIONS(path, httpHandler)
+			router.OPTIONS(path, handler.Options)
 		}
 	})
 }
