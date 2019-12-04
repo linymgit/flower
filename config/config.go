@@ -3,6 +3,7 @@ package config
 const News_Type_Id = 37
 
 type Config struct {
+	ServerPort    int           `json:"server_port"`
 	NewsTypeId    int           `json:"news_type_id"`
 	Md5Salt       string        `json:"md5_salt"`
 	CaptchaConfig CaptchaConfig `json:"captcha_config"`
@@ -32,4 +33,8 @@ type CorsConfig struct {
 	CorsAllowMethods     string `json:"cors_allow_methods"`
 	CorsAllowOrigin      string `json:"cors_allow_origin"`
 	CorsAllowCredentials string `json:"cors_allow_credentials"`
+}
+
+type MysqlConfig struct {
+	ConnUrl string `json:"conn_url"`
 }
