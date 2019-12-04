@@ -5,4 +5,5 @@ import (
 )
 
 var Options = CROS(func(ctx *fasthttp.RequestCtx) {
+	return
 })
