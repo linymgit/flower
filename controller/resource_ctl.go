@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"flower/config"
 	"flower/entity"
 	"flower/handler"
 	"flower/http"
@@ -10,6 +11,7 @@ import (
 	"github.com/qiniu/api.v7/storage"
 	"github.com/valyala/fasthttp"
 )
+
 type Resource struct {
 }
 
@@ -25,19 +27,20 @@ func init() {
 
 }
 
-func (r *Resource) GetQNUploadToken(ctx *fasthttp.RequestCtx)  (resp *result.Result) {
+func (r *Resource) GetQNUploadToken(ctx *fasthttp.RequestCtx) (resp *result.Result) {
 	upToken := getUploadToken()
-	resp = result.NewSuccess(&entity.ResourceRsp{Token:upToken})
+	resp = result.NewSuccess(&entity.ResourceRsp{Token: upToken})
 	return
 }
 
 //bucket accesskey secretkey 先写死之后再改为配置
-func getUploadToken()(upToken string){
-	bucket:="picture"
+func getUploadToken() (upToken string) {
+	//bucket:="picture"
 	putPolicy := storage.PutPolicy{
-		Scope: bucket,
+		Scope: config.Conf.QNconfig.Bucket,
 	}
-	mac := qbox.NewMac("aYpbxU9ziIThJUlbrf5M0-w61ouCi38yFiCcEhzH", "SkI35ZbYlq87xUvQyzDCpofj4HjRzCJbzlBb4M33")
+	//mac := qbox.NewMac("aYpbxU9ziIThJUlbrf5M0-w61ouCi38yFiCcEhzH", "SkI35ZbYlq87xUvQyzDCpofj4HjRzCJbzlBb4M33")
+	mac := qbox.NewMac(config.Conf.QNconfig.AccessKey, config.Conf.QNconfig.SecretKey)
 	upToken = putPolicy.UploadToken(mac)
 	return
 }

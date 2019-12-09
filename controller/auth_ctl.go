@@ -2,6 +2,7 @@ package controller
 
 import (
 	"flower/captcha"
+	"flower/config"
 	"flower/crypto"
 	"flower/entity"
 	"flower/handler"
@@ -55,7 +56,9 @@ func (a *Auth) Login(ctx *fasthttp.RequestCtx, req *entity.LoginReq) (resp *resu
 		resp = result.AcountError
 		return
 	}
-	tokenString, err := jwt.GenJwt(map[string]interface{}{http.JwtIdKey: account.Id, http.JwtRoleId: account.RoleId, http.JwtExp: time.Now().Add(24*60 * time.Minute).Unix()})
+	//tokenString, err := jwt.GenJwt(map[string]interface{}{http.JwtIdKey: account.Id, http.JwtRoleId: account.RoleId, http.JwtExp: time.Now().Add(24*60 * time.Minute).Unix()})
+	duration := int(time.Minute) * config.Conf.JwtConfig.JwtExpiredMin
+	tokenString, err := jwt.GenJwt(map[string]interface{}{http.JwtIdKey: account.Id, http.JwtRoleId: account.RoleId, http.JwtExp: time.Now().Add(time.Duration(duration)).Unix()})
 	if err != nil {
 		// TODO
 	}

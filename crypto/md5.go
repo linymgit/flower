@@ -3,15 +3,16 @@ package crypto
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"flower/config"
 	"strings"
 )
 
-const md5_salt = "forrily"
+//const md5_salt = "forrily"
 
 func GetPasswordWithMd5(pw string) (md5Pw string) {
 	m5 := md5.New()
 	m5.Write([]byte(pw))
-	m5.Write([]byte(md5_salt))
+	m5.Write([]byte(config.Conf.Md5Salt))
 	st := m5.Sum(nil)
 	md5Pw = hex.EncodeToString(st)
 	return
