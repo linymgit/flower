@@ -1,3 +1,26 @@
 {
-
+  "server_port": 8089,
+  "news_type_id": 37,
+  "md5_salt": "forrily",
+  "captcha_config": {
+    "captcha_height": 60,
+    "captcha_weight": 150,
+    "captcha_expired_min": 2
+  },
+  "jwt_config": {
+    "jwt_secret_key": "forrily",
+    "jwt_expired_min": 1200
+  },
+  "qn_config": {
+    "access_key": "aYpbxU9ziIThJUlbrf5M0-w61ouCi38yFiCcEhzH",
+    "secret_key": "SkI35ZbYlq87xUvQyzDCpofj4HjRzCJbzlBb4M33",
+    "bucket": "picture"
+  },
+  "mysql_config": {
+    "conn_url": "root:linym6303763!@tcp(123.207.1.119:3306)/flower?charset=utf8mb4",
+    "show_sql": false,
+    "conn_max_lifetime": 60,
+    "max_idle_conns": 500,
+    "max_open_conns": 1000
+  }
 }

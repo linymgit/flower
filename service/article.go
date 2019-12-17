@@ -25,7 +25,7 @@ func (ac *ArticleService) ListArticleType(query *entity.ListArticleTypeReq) (ats
 	cond := builder.NewCond()
 
 	//不展示新闻分类
-	cond = cond.And(builder.Neq{"id":config.News_Type_Id})
+	cond = cond.And(builder.Neq{"id": config.Conf.NewsTypeId})
 
 	if query.Id > 0 {
 		cond = cond.And(builder.Eq{"id": query.Id})
@@ -309,7 +309,7 @@ func (ac *ArticleService) GetArticle(id int64) (a *gen.Article, ok bool, err err
 }
 
 func (ac *ArticleService) GetNewsNav() (navs []entity.ArticleNav, err error) {
-	resultsSlice, err := mysql.Db.Query("select DATE_FORMAT(save_time,'%Y-%M') time,count(id) count from article where type_id = ? group by time;", config.News_Type_Id)
+	resultsSlice, err := mysql.Db.Query("select DATE_FORMAT(save_time,'%Y-%M') time,count(id) count from article where type_id = ? group by time;", config.Conf.NewsTypeId)
 	if err != nil {
 		return
 	}
@@ -342,7 +342,7 @@ func (ac *ArticleService) GetNewsNav() (navs []entity.ArticleNav, err error) {
 }
 
 func (ac *ArticleService) GetNewsNavV2() (navs []entity.ArticleNavV2, err error) {
-	resultsSlice, err := mysql.Db.Query("select DATE_FORMAT(save_time,'%Y-%M') time,count(id) count from article where type_id = ? group by time;", config.News_Type_Id)
+	resultsSlice, err := mysql.Db.Query("select DATE_FORMAT(save_time,'%Y-%M') time,count(id) count from article where type_id = ? group by time;", config.Conf.NewsTypeId)
 	if err != nil {
 		return
 	}
@@ -365,7 +365,7 @@ func (ac *ArticleService) GetNewsNavV2() (navs []entity.ArticleNavV2, err error)
 	entity.SortArticleNavsV2(navs, func(p, q *entity.ArticleNavV2) bool {
 		if p.Year != q.Year {
 			return p.Year > q.Year
-		}else{
+		} else {
 			return entity.MonthSort[p.Month] > entity.MonthSort[q.Month]
 		}
 		return false
@@ -375,7 +375,7 @@ func (ac *ArticleService) GetNewsNavV2() (navs []entity.ArticleNavV2, err error)
 
 func (ac *ArticleService) GetNewsTitles(req *entity.GetNewsTitlesReq) (titles []entity.GetNewsTitlesInfo, err error) {
 	articles := make([]gen.Article, 0)
-	err = mysql.Db.Cols("id", "title").Where("type_id = ? AND DATE_FORMAT(save_time,'%Y-%M')=?", config.News_Type_Id, req.Time).Find(&articles)
+	err = mysql.Db.Cols("id", "title").Where("type_id = ? AND DATE_FORMAT(save_time,'%Y-%M')=?", config.Conf.NewsTypeId, req.Time).Find(&articles)
 	if err != nil {
 		return
 	}

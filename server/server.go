@@ -1,9 +1,11 @@
 package server
 
 import (
+	"flower/config"
 	"flower/router"
 	"fmt"
 	"github.com/valyala/fasthttp"
+	"log"
 )
 
 type Server struct {
@@ -16,7 +18,7 @@ func (s *Server) Start() {
 		Handler:                            router.Handler,
 		ErrorHandler:                       nil,
 		HeaderReceived:                     nil,
-		Name:                               "FLOWRE SERVER",
+		Name:                               "FLOWER SERVER",
 		Concurrency:                        0,
 		DisableKeepalive:                   false,
 		ReadBufferSize:                     0,
@@ -42,10 +44,11 @@ func (s *Server) Start() {
 		KeepHijackedConns:                  false,
 	}
 
-	fmt.Printf("starting flower server ...")
+	fmt.Printf("starting flower server on %d...", config.Conf.ServerPort)
 	err := s.server.ListenAndServe(fmt.Sprintf(":%d", s.Port))
 	if err != nil {
 		// TODO
+		log.Fatalf("start server error " + err.Error())
 	}
 
 }

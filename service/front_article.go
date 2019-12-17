@@ -31,11 +31,11 @@ func (fA FrontArticleService) ListArticleType() (categories []*entity.FrontArtic
 	defer rows.Close()
 	if len(pIds) == 1 {
 		session = session.Where(builder.Neq{"id": pIds[0]})
-	}else if len(pIds) > 0 {
+	} else if len(pIds) > 0 {
 		session = session.NotIn("id", pIds)
 	}
 
-	err = session.And("id !=?",config.News_Type_Id).Find(&categories)
+	err = session.And("id !=?", config.Conf.NewsTypeId).Find(&categories)
 	return
 }
 
@@ -44,9 +44,9 @@ func (fA FrontArticleService) ListArticles(req *entity.FrontArticleListReq) (al 
 	defer session.Close()
 	al = make([]*gen.Article, 0)
 	if req.TypeId > 0 {
-		session = session.Where(builder.Eq{"type_id":req.TypeId})
-	}else{
-		session = session.Where(builder.Neq{"type_id":config.News_Type_Id})
+		session = session.Where(builder.Eq{"type_id": req.TypeId})
+	} else {
+		session = session.Where(builder.Neq{"type_id": config.Conf.NewsTypeId})
 	}
 	// 搜索TODO
 	total, err = session.Desc("update_time").Limit(req.Page.PageSize, req.Page.DbPageIndex()).FindAndCount(&al)
