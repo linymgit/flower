@@ -27,3 +27,11 @@ func (i *IndexService) ListIndexProduct(query *entity.IndexReq) (ps []*gen.Produ
 	total, err = session.Where("index_show=?", state.IndexShow).Asc("update_time").Limit(query.Page.PageSize, query.Page.DbPageIndex()).Cols("id", "cover_url", "name", "summary").FindAndCount(&ps)
 	return
 }
+
+func (i *IndexService) ListIndexAdV2(query *entity.IndexReqV2) (ads []*gen.Ad, total int64, err error) {
+	ads = make([]*gen.Ad, 0)
+	session := mysql.Db.NewSession()
+	defer session.Close()
+	total, err = session.Where("postion_id=? and state=?", query.PostionId, state.AdOnline).Asc("save_time").Limit(query.Page.PageSize, query.Page.DbPageIndex()).FindAndCount(&ads)
+	return
+}

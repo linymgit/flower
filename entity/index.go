@@ -22,3 +22,8 @@ type IndexProductRsp struct {
 	Page *Page           `json:"page"`
 	Ps   []*IndexProduct `json:"ad"`
 }
+
+type IndexReqV2 struct {
+	Page      *Page `json:"page" validate:"required"`
+	PostionId int   `json:"postion_id"`
+}

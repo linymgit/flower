@@ -23,6 +23,12 @@ func init() {
 	)
 
 	router.AddRoute(
+		"/index/ad/list/v2",
+		http.POST_AND_OPTIONS,
+		index.ListIndexAdV2,
+	)
+
+	router.AddRoute(
 		"/index/product/list",
 		http.POST_AND_OPTIONS,
 		index.ListIndexProduct,
@@ -34,6 +40,25 @@ func (i *Index) ListIndexAd(ctx *fasthttp.RequestCtx, req *entity.IndexReq) (rsp
 	if err != nil {
 		rsp = result.DatabaseError
 		log.ErrorF("ListIndexAd->[%v]", err)
+		return
+	}
+	rsp = result.NewSuccess(
+		&entity.IndexAdRsp{
+			Page: &entity.Page{
+				PageSize:  req.Page.PageSize,
+				PageIndex: req.Page.PageIndex,
+				Total:     total,
+			},
+			Ad: ads,
+		})
+	return
+}
+
+func (i *Index) ListIndexAdV2(ctx *fasthttp.RequestCtx, req *entity.IndexReqV2) (rsp *result.Result) {
+	ads, total, err := service.IndexSrv.ListIndexAdV2(req)
+	if err != nil {
+		rsp = result.DatabaseError
+		log.ErrorF("ListIndexAdv2->[%v]", err)
 		return
 	}
 	rsp = result.NewSuccess(
