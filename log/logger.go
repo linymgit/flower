@@ -57,5 +57,5 @@ func WarnF(format string, v ...interface{}) {
 }
 
 func ErrorF(format string, v ...interface{}) {
-	errorLogger.Fatalf(format, v)
+	errorLogger.Printf(format, v)
 }

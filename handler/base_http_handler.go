@@ -19,7 +19,7 @@ func BaseHttpHandler(handler interface{}) fasthttp.RequestHandler {
 				print(err)
 				bytes, err := json.Marshal(error2.NewError(error2.ServerEc, "server internal result"))
 				if err != nil {
-					log.ErrorF("BaseHttpHandler -> json.Marshal(error2.NewError(error2.ServerEc, \"server internal result\")) ->[%v]", err)
+					log.ErrorF("BaseHttpHandler->json.Marshal(error2.NewError(error2.ServerEc, \"server internal result\"))->%v", err)
 				}
 				ctx.Response.SetBodyRaw(bytes)
 			}
