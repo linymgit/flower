@@ -4,6 +4,7 @@ import (
 	"flower/entity"
 	"flower/handler"
 	"flower/http"
+	"flower/log"
 	"flower/result"
 	"flower/router"
 	"flower/service"
@@ -42,6 +43,7 @@ func (fP *FrontProduct) ListProduct(ctx *fasthttp.RequestCtx, req *entity.FrontL
 	ps, total, err := service.FrontProdSrv.ListProduct(req)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("FrontProduct.ListProduct->[%v]", err)
 		return
 	}
 	vos := make([]*entity.FrontListProductVo, len(ps))
@@ -70,6 +72,7 @@ func (fP *FrontProduct) ListCategory(ctx *fasthttp.RequestCtx) (rsp *result.Resu
 	categories, err := service.FrontProdSrv.ListCategory()
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("FrontProduct.ListCategory->[%v]", err)
 		return
 	}
 	rsp = result.NewSuccess(&entity.FrontListCategoryRsp{Categories: categories})
@@ -81,10 +84,12 @@ func (fP *FrontProduct) GetProduct(ctx *fasthttp.RequestCtx, req *entity.FrontGe
 	p, ok, err := service.FrontProdSrv.GetProduct(req.Id)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("FrontProduct.GetProduct->[%v]", err)
 		return
 	}
 	if !ok {
 		rsp = result.NewError(result.RequestParamEc, "产品不存在")
+		log.WarnF("FrontProduct.GetProduct->[产品不存在]->[%v]", req)
 		return
 	}
 	i2sMap, err := service.FrontProdSrv.GetHotTop6Product()

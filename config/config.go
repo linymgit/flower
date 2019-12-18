@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-const News_Type_Id = 37
+//const News_Type_Id = 37
 
 var configFilePathFlag = flag.String("cfg", "config.json", "配置文件")
 
@@ -20,6 +20,7 @@ type Configuration struct {
 	QNconfig      QNconfig      `json:"qn_config"`
 	CorsConfig    CorsConfig    `json:"cors_config,omitempty"`
 	MysqlConfig   MysqlConfig   `json:"mysql_config"`
+	LogConfig     LogConfig     `json:"log_config"`
 }
 
 type CaptchaConfig struct {
@@ -54,6 +55,11 @@ type MysqlConfig struct {
 	MaxOpenConns    int    `json:"max_open_conns"`
 }
 
+type LogConfig struct {
+	LogPath   string `json:"log_path"`
+	LogPrefix string `json:"log_prefix"`
+}
+
 var Conf = new(Configuration)
 
 func getConfigFilePath() string {
@@ -66,14 +72,14 @@ func LoadConfig() {
 	buf, err := ioutil.ReadFile(path)
 	if err != nil {
 		//todo
-		log.Fatalf("load config error " + err.Error())
+		log.Fatalf("load config error [%v]", err)
 		return
 	}
 
 	err = json.Unmarshal(buf, Conf)
 	if err != nil {
 		//todo
-		log.Fatalf("load config error " + err.Error())
+		log.Fatalf("load config error [%v]", err)
 		return
 	}
 

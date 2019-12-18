@@ -3,6 +3,7 @@ package controller
 import (
 	"flower/entity"
 	"flower/http"
+	"flower/log"
 	"flower/result"
 	"flower/router"
 	"flower/service"
@@ -32,6 +33,7 @@ func (i *Index) ListIndexAd(ctx *fasthttp.RequestCtx, req *entity.IndexReq) (rsp
 	ads, total, err := service.IndexSrv.ListIndexAd(req)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("ListIndexAd->[%v]", err)
 		return
 	}
 	rsp = result.NewSuccess(
@@ -50,6 +52,7 @@ func (i *Index) ListIndexProduct(ctx *fasthttp.RequestCtx, req *entity.IndexReq)
 	ps, total, err := service.IndexSrv.ListIndexProduct(req)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("ListIndexProduct->[%v]", err)
 		return
 	}
 	ip := make([]*entity.IndexProduct, total)

@@ -4,6 +4,7 @@ import (
 	"flower/entity"
 	"flower/handler"
 	"flower/http"
+	"flower/log"
 	"flower/result"
 	"flower/router"
 	"flower/service"
@@ -101,6 +102,7 @@ func (ac *Article) ListArticleType(ctx *fasthttp.RequestCtx, req *entity.ListArt
 	ats, total, err := service.ArticleSrv.ListArticleType(req)
 	if err != nil {
 		resp = result.DatabaseError
+		log.ErrorF("ListArticleType->[%v]", err)
 		return
 	}
 	var page *entity.Page
@@ -123,6 +125,7 @@ func (ac *Article) NewArticleType(ctx *fasthttp.RequestCtx, req *entity.NewArtic
 	isExistName, isExistParent, ok, err := service.ArticleSrv.NewArticleType(req)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("NewArticleType->[%v]", err)
 		return
 	}
 	if isExistName {
@@ -131,6 +134,7 @@ func (ac *Article) NewArticleType(ctx *fasthttp.RequestCtx, req *entity.NewArtic
 	}
 	if !isExistParent {
 		rsp = result.NewError(result.RequestParamEc, "上级id不存在")
+		log.WarnF("NewArticleType->[上级id不存在]->[%v]", req)
 		return
 	}
 	rsp = result.NewSuccess(ok)
@@ -141,6 +145,7 @@ func (ac *Article) GetActicleCategoryTree(ctx *fasthttp.RequestCtx) (rsp *result
 	tree, err := service.ArticleSrv.GetArticleCategoryTree()
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("GetActicleCategoryTree->[%v]", err)
 		return
 	}
 	rsp = result.NewSuccess(tree)
@@ -151,10 +156,12 @@ func (ac *Article) EditArticleType(ctx *fasthttp.RequestCtx, req *entity.EditArt
 	ok, existParent, err := service.ArticleSrv.EditArticle(req)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("EditArticleType->[%v]", err)
 		return
 	}
 	if !existParent {
 		rsp = result.NewError(result.RequestParamEc, "上级分类不存在")
+		log.WarnF("EditArticleType->[级分类不存在]->[%v]", req)
 		return
 	}
 	rsp = result.NewSuccess(ok)
@@ -165,14 +172,17 @@ func (ac *Article) DeleteArticleType(ctx *fasthttp.RequestCtx, req *entity.Delet
 	isParent, ok, err := service.ArticleSrv.DeleteAricleTypeById(req.Id)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("DeleteArticleType->[%v]", err)
 		return
 	}
 	if isParent {
 		rsp = result.NewError(result.ParamEc, "是上级分类,要删除这个分类要先删除他的所有下级分类")
+		log.WarnF("DeleteArticleType->[是上级分类,要删除这个分类要先删除他的所有下级分类]->[%v]", req)
 		return
 	}
 	if !ok {
 		rsp = result.NewError(result.RequestParamEc, "id不存在")
+		log.WarnF("DeleteArticleType->[id不存在]->[%v]", req)
 		return
 	}
 	rsp = result.NewSuccess("删除成功")
@@ -184,6 +194,7 @@ func (ac *Article) NewArticle(ctx *fasthttp.RequestCtx, req *entity.NewArticleRe
 	articleId, err := service.ArticleSrv.NewArticle(req)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("NewArticle->[%v]", err)
 		return
 	}
 	rsp = result.NewSuccess(&entity.NewArticleRsp{ArticleId: articleId})
@@ -195,11 +206,13 @@ func (ac *Article) ListArticle(ctx *fasthttp.RequestCtx, req *entity.ListArticle
 	as, total, err := service.ArticleSrv.ListArticle(req)
 	if err != nil {
 		resp = result.DatabaseError
+		log.ErrorF("ListArticle->[%v]", err)
 		return
 	}
 	id2nameMap, err := service.ArticleSrv.TypeId2Name()
 	if err != nil {
 		resp = result.DatabaseError
+		log.ErrorF("ListArticle->[%v]", err)
 		return
 	}
 	for k := range as {
@@ -221,10 +234,12 @@ func (ac *Article) ChangeOnline(ctx *fasthttp.RequestCtx, req *entity.ChangeOnli
 	ok, err := service.ArticleSrv.ChangeOnline(req.Id)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("ChangeOnline->[%v]", err)
 		return
 	}
 	if !ok {
 		rsp = result.NewError(result.RequestParamEc, "无修改的数据")
+		log.WarnF("ChangeOnline->[无修改的数据]->[%v]", req)
 		return
 	}
 	rsp = result.NewSuccess("修改成功")
@@ -235,10 +250,12 @@ func (ac *Article) DeleteArticle(ctx *fasthttp.RequestCtx, req *entity.DeleteArt
 	ok, err := service.ArticleSrv.DeleteArticle(req.Id)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("DeleteArticle->[%v]", err)
 		return
 	}
 	if !ok {
 		rsp = result.NewError(result.RequestParamEc, "无文章id")
+		log.WarnF("DeleteArticle->[无文章id]->[%v]", req)
 		return
 	}
 	rsp = result.NewSuccess("删除成功")
@@ -249,10 +266,12 @@ func (ac *Article) ModifyArticle(ctx *fasthttp.RequestCtx, req *entity.ModifyArt
 	ok, err := service.ArticleSrv.ModifyArticle(req)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("ModifyArticle->[%v]", err)
 		return
 	}
 	if !ok {
 		rsp = result.NewError(result.RequestParamEc, "无修改数据")
+		log.WarnF("ModifyArticle->[无修改数据]->[%v]", req)
 		return
 	}
 	rsp = result.NewSuccess("修改成功")

@@ -4,6 +4,7 @@ import (
 	"flower/entity"
 	"flower/handler"
 	"flower/http"
+	"flower/log"
 	"flower/result"
 	"flower/router"
 	"flower/service"
@@ -114,6 +115,7 @@ func (pc *ProdCategory) ListProdCategory(ctx *fasthttp.RequestCtx, req *entity.L
 	pcs, total, err := service.ProdSrv.ListProductCategory(req)
 	if err != nil {
 		resp = result.DatabaseError
+		log.ErrorF("ListProdCategory->[%v]", err)
 		return
 	}
 	var page *entity.Page
@@ -137,14 +139,17 @@ func (pc *ProdCategory) NewProdCategory(ctx *fasthttp.RequestCtx, req *entity.Ne
 	isExistName, isExistParent, ok, err := service.ProdSrv.NewProductCategory(req)
 	if err != nil {
 		resp = result.DatabaseError
+		log.ErrorF("NewProdCategory->[%v]", err)
 		return
 	}
 	if isExistName {
 		resp = result.NewError(result.RequestParamEc, "分类名称已存在")
+		log.WarnF("NewProdCategory->[分类名称已存在]->[%v]", req)
 		return
 	}
 	if !isExistParent {
 		resp = result.NewError(result.RequestParamEc, "上级分类不存在")
+		log.WarnF("NewProdCategory->[上级分类不存在]->[%v]", req)
 		return
 	}
 	if ok {
@@ -159,6 +164,7 @@ func (pc *ProdCategory) ProdCategoryTree(ctx *fasthttp.RequestCtx) (resp *result
 	tree, err := service.ProdSrv.GetProductCategoryTree()
 	if err != nil {
 		resp = result.DatabaseError
+		log.ErrorF("ProdCategoryTree->[%v]", err)
 		return
 	}
 	resp = result.NewSuccess(tree)
@@ -169,10 +175,12 @@ func (pc *ProdCategory) ChangeProcategoryState(ctx *fasthttp.RequestCtx, req *en
 	ok, err := service.ProdSrv.ChangeProcategoryState(req.Id)
 	if err != nil {
 		resp = result.DatabaseError
+		log.ErrorF("ChangeProcategoryState->[%v]", err)
 		return
 	}
 	if !ok {
 		resp = result.NewError(result.ParamEc, "分类id 不存在")
+		log.WarnF("ChangeProcategoryState->[分类id 不存在]->[%v]", req)
 		return
 	}
 	resp = result.NewSuccess(ok)
@@ -183,10 +191,12 @@ func (pc *ProdCategory) ModifyProcategory(ctx *fasthttp.RequestCtx, req *entity.
 	affected, err := service.ProdSrv.ModifyProcategory(req)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("ModifyProcategory ->[%v]", err)
 		return
 	}
 	if affected != 1 {
 		rsp = result.NewError(result.RequestParamEc, "无修改的数据")
+		log.WarnF("ModifyProcategory ->[无修改的数据]->[%v]", req)
 		return
 	}
 	rsp = result.NewSuccess("修改成功")
@@ -197,14 +207,17 @@ func (pc *ProdCategory) DeleteProcategory(ctx *fasthttp.RequestCtx, req *entity.
 	isParent, affected, err := service.ProdSrv.DeleteProcategoryById(req.Id)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("DeleteProcategory->[%v]", err)
 		return
 	}
 	if isParent {
 		rsp = result.NewError(result.ParamEc, "是上级分类,要删除这个分类要先删除他的所有下级分类")
+		log.WarnF("DeleteProcategory->[是上级分类,要删除这个分类要先删除他的所有下级分类]->[%v]", req)
 		return
 	}
 	if affected != 1 {
 		rsp = result.NewError(result.RequestParamEc, "id不存在")
+		log.WarnF("DeleteProcategory->[id不存在]->[%v]", req)
 		return
 	}
 	rsp = result.NewSuccess("删除成功")
@@ -217,11 +230,14 @@ func (pc *ProdCategory) NewProduct(ctx *fasthttp.RequestCtx, req *entity.NewProd
 	id, ok := http.GetJwtId(ctx)
 	if !ok {
 		rsp = result.NewError(result.UnKnowEc, "未登录")
+		log.WarnF("NewProduct->[未登录]->[%v]", req)
+		return
 	}
 	req.AuthorId = id
 	productId, err := service.ProdSrv.NewProductResutId(req)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("NewProduct->service.ProdSrv.NewProductResutId(req)->[%v]", err)
 		return
 	}
 	rsp = result.NewSuccess(&entity.NewProductRsp{ProductId: productId})
@@ -232,11 +248,13 @@ func (pc *ProdCategory) ListProduct(ctx *fasthttp.RequestCtx, req *entity.ListPr
 	ps, total, err := service.ProdSrv.ListProduct(req)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("ListProduct->service.ProdSrv.ListProduct(req)->[%v]", err)
 		return
 	}
 	id2nameMap, err := service.ProdSrv.CategoryId2Name()
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("ListProduct->service.ProdSrv.CategoryId2Name()->[%v]", err)
 		return
 	}
 	for k := range ps {
@@ -258,10 +276,12 @@ func (pc *ProdCategory) ChangeProductState(ctx *fasthttp.RequestCtx, req *entity
 	ok, err := service.ProdSrv.ChangeProductState(req.Id)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("ChangeProductState->service.ProdSrv.ChangeProductState(req.Id)->[%v]", err)
 		return
 	}
 	if !ok {
 		rsp = result.NewError(result.RequestParamEc, "产品id不存在")
+		log.WarnF("ChangeProductState->[产品id不存在]->[%v]", req)
 		return
 	}
 	rsp = result.NewSuccess("修改成功")
@@ -272,10 +292,12 @@ func (pc *ProdCategory) ChangeProductIndexShow(ctx *fasthttp.RequestCtx, req *en
 	ok, err := service.ProdSrv.ChangeProductIndexShow(req.Id)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("ChangeProductIndexShow->service.ProdSrv.ChangeProductIndexShow(req.Id)->[%v]", err)
 		return
 	}
 	if !ok {
 		rsp = result.NewError(result.RequestParamEc, "产品id不存在")
+		log.WarnF("ChangeProductIndexShow->[产品id不存在]->[%v]", req)
 		return
 	}
 	rsp = result.NewSuccess("修改成功")
@@ -286,10 +308,12 @@ func (pc *ProdCategory) ModifyProduct(ctx *fasthttp.RequestCtx, req *entity.Modi
 	ok, err := service.ProdSrv.ModifyProduct(req)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("ModifyProduct->service.ProdSrv.ModifyProduct(req)->[%v]", err)
 		return
 	}
 	if !ok {
 		rsp = result.NewError(result.RequestParamEc, "无修改的数据")
+		log.WarnF("ModifyProduct->[无修改的数据]->[%v]", req)
 		return
 	}
 	rsp = result.NewSuccess("修改成功")
@@ -300,10 +324,12 @@ func (pc *ProdCategory) DeleteProductById(ctx *fasthttp.RequestCtx, req *entity.
 	ok, err := service.ProdSrv.DeleteProductById(req.Id)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("DeleteProductById->service.ProdSrv.DeleteProductById(req.Id)->[%v]", err)
 		return
 	}
 	if !ok {
 		rsp = result.NewError(result.RequestParamEc, "产品id不存在")
+		log.WarnF("DeleteProductById->[产品id不存在]->[%v]", req)
 		return
 	}
 	rsp = result.NewSuccess("删除成功")

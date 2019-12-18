@@ -4,6 +4,7 @@ import (
 	"flower/entity"
 	"flower/handler"
 	"flower/http"
+	"flower/log"
 	"flower/result"
 	"flower/router"
 	"flower/service"
@@ -40,8 +41,8 @@ func (c *Crm) ListCrm(ctx *fasthttp.RequestCtx, req *entity.CrmListReq) (resp *r
 	}
 	crms, total, err := service.CrmSrv.ListCrm(req)
 	if err != nil {
-		//TODO
 		resp = result.DatabaseError
+		log.ErrorF("ListCrm->[%v]", err)
 		return
 	}
 	resp = result.NewSuccess(
@@ -61,6 +62,7 @@ func (c *Crm) DeleteCrmById(ctx *fasthttp.RequestCtx, req *entity.CrmDeleteReq) 
 	ok, err := service.CrmSrv.DeleteCrmById(req.Id)
 	if err != nil {
 		resp = result.DatabaseError
+		log.ErrorF("DeleteCrmById->[%v]", err)
 		return
 	}
 	resp = result.NewSuccess(ok)

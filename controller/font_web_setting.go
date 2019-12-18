@@ -3,6 +3,7 @@ package controller
 import (
 	"flower/entity"
 	"flower/http"
+	"flower/log"
 	"flower/result"
 	"flower/router"
 	"flower/service"
@@ -27,6 +28,7 @@ func init() {
 func (s *FrontWebSetting) GetSetting(ctx *fasthttp.RequestCtx) (rsp *result.Result) {
 	ok, webSetting, err := service.SysSrv.SelectSystemSetting()
 	if err != nil {
+		log.ErrorF("FrontWebSetting.GetSetting->[%v]", err)
 		return
 	}
 	if ok {

@@ -3,6 +3,7 @@ package controller
 import (
 	"flower/entity"
 	"flower/http"
+	"flower/log"
 	"flower/result"
 	"flower/router"
 	"flower/service"
@@ -58,6 +59,7 @@ func (fA *FrontArticle) ListArticlesType(ctx *fasthttp.RequestCtx) (rsp *result.
 	categories, err := service.FrontArticleSrv.ListArticleType()
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("FrontArticle.ListArticlesType->[%v]", err)
 		return
 	}
 	rsp = result.NewSuccess(&entity.FrontArticleTypeRsp{Categories: categories})
@@ -68,6 +70,7 @@ func (fA *FrontArticle) ListArticles(ctx *fasthttp.RequestCtx, req *entity.Front
 	al, total, err := service.FrontArticleSrv.ListArticles(req)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("FrontArticle.ListArticles->[%v]", err)
 		return
 	}
 	vos := make([]*entity.FrontArticleIntro, len(al))
@@ -87,7 +90,7 @@ func (fA *FrontArticle) ListArticles(ctx *fasthttp.RequestCtx, req *entity.Front
 				PageIndex: req.Page.PageIndex,
 				Total:     total,
 			},
-			List:vos,
+			List: vos,
 		})
 	return
 }
@@ -97,10 +100,12 @@ func (fa *FrontArticle) GetArticle(ctx *fasthttp.RequestCtx, req *entity.FrontGe
 	p, ok, err := service.ArticleSrv.GetArticle(req.Id)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("FrontArticle.GetArticle->[%v]", err)
 		return
 	}
 	if !ok {
 		rsp = result.NewError(result.RequestParamEc, "文章不存在")
+		log.WarnF("FrontArticle.GetArticle->[文章不存在]->[%v]", req)
 		return
 	}
 	rsp = result.NewSuccess(p)
@@ -111,6 +116,7 @@ func (fa *FrontArticle) GetNewsNav(ctx *fasthttp.RequestCtx) (rsp *result.Result
 	navs, err := service.ArticleSrv.GetNewsNav()
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("FrontArticle.GetNewsNav->[%v]", err)
 		return
 	}
 	rsp = result.NewSuccess(navs)
@@ -121,6 +127,7 @@ func (fa *FrontArticle) GetNewsNavV2(ctx *fasthttp.RequestCtx) (rsp *result.Resu
 	navs, err := service.ArticleSrv.GetNewsNavV2()
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("FrontArticle.GetNewsNavV2->[%v]", err)
 		return
 	}
 	rsp = result.NewSuccess(navs)
@@ -131,6 +138,7 @@ func (fa *FrontArticle) GetNewsTitles(ctx *fasthttp.RequestCtx, req *entity.GetN
 	title, err := service.ArticleSrv.GetNewsTitles(req)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("FrontArticle.GetNewsTitles->[%v]", err)
 		return
 	}
 	rsp = result.NewSuccess(title)

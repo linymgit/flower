@@ -5,11 +5,11 @@ import (
 	"flower/captcha"
 	"flower/config"
 	_ "flower/controller"
+	"flower/log"
 	"flower/mysql"
 	"flower/router"
 	"flower/server"
 	"fmt"
-	"log"
 	"os"
 	"os/signal"
 	"sync"
@@ -19,11 +19,14 @@ import (
 func main() {
 	defer func() {
 		if err := recover(); err != nil {
-			fmt.Printf("result ")
+			fmt.Printf("recover error")
+			log.ErrorF("recover error [%v]", err)
 		}
 	}()
 	flag.Parse()
 	config.LoadConfig()
+	//初始化日志
+	log.Init()
 	// 初始化验证码
 	captcha.Init()
 	// 初始化配置
@@ -38,8 +41,8 @@ func initMysqlDb() {
 	//err := mysql.Init("root:linym6303763!@tcp(123.207.1.119:3306)/flower?charset=utf8mb4")
 	err := mysql.Init(config.Conf.MysqlConfig.ConnUrl)
 	if err != nil {
-		// TODO
-		log.Fatalf("initialize mysql error")
+		fmt.Printf("initialize mysql error")
+		log.ErrorF("initialize mysql error")
 	}
 }
 
@@ -58,7 +61,7 @@ func StartServer() {
 			if sig == syscall.SIGINT || sig == syscall.SIGTERM {
 				err := s.Shutdown()
 				if err != nil {
-					// TODO
+					log.ErrorF(" error[%v] occurred when shutdown the server ...", err)
 				}
 				Shutdown()
 				wg.Done()
@@ -74,4 +77,5 @@ func StartServer() {
 // 关闭资源
 func Shutdown() {
 	fmt.Printf("close server")
+	log.InfoF("close server ... ")
 }

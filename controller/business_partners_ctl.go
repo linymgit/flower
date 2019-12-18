@@ -4,6 +4,7 @@ import (
 	"flower/entity"
 	"flower/handler"
 	"flower/http"
+	"flower/log"
 	"flower/result"
 	"flower/router"
 	"flower/service"
@@ -54,6 +55,7 @@ func (bp *BusinessPartners) AdminListBusinessPartners(ctx *fasthttp.RequestCtx, 
 	bps, total, err := service.BusinessPartnersSrv.AdminListBusinessPartners(req)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("AdminListBusinessPartners->[%v]", err)
 		return
 	}
 	rsp = result.NewSuccess(
@@ -63,7 +65,7 @@ func (bp *BusinessPartners) AdminListBusinessPartners(ctx *fasthttp.RequestCtx, 
 				PageIndex: req.Page.PageIndex,
 				Total:     total,
 			},
-			Bps:bps,
+			Bps: bps,
 		})
 	return
 }
@@ -71,10 +73,12 @@ func (bp *BusinessPartners) DeleteBusinessPartnersById(ctx *fasthttp.RequestCtx,
 	ok, err := service.BusinessPartnersSrv.DeleteBusinessPartnersById(req.Id)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("DeleteBusinessPartnersById->[%v]", err)
 		return
 	}
 	if !ok {
 		rsp = result.NewError(result.RequestParamEc, "不存在这个id")
+		log.WarnF("DeleteBusinessPartnersById->[不存在这个id]->[%v]", req)
 		return
 	}
 	rsp = result.NewSuccess("删除成功")
@@ -84,10 +88,12 @@ func (bp *BusinessPartners) AddBusinessPartners(ctx *fasthttp.RequestCtx, req *e
 	ok, err := service.BusinessPartnersSrv.AddBusinessPartners(req)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("AddBusinessPartners->[%v]", err)
 		return
 	}
 	if !ok {
 		rsp = result.NewError(result.RequestParamEc, "创建失败")
+		log.WarnF("AddBusinessPartners->[创建失败]->[%v]", req)
 		return
 	}
 	rsp = result.NewSuccess("创建成功")
@@ -97,10 +103,12 @@ func (bp *BusinessPartners) ModifyBusinessPartners(ctx *fasthttp.RequestCtx, req
 	ok, err := service.BusinessPartnersSrv.ModifyBusinessPartners(req)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("ModifyBusinessPartners->[%v]", err)
 		return
 	}
 	if !ok {
 		rsp = result.NewError(result.RequestParamEc, "修改失败")
+		log.WarnF("ModifyBusinessPartners->[修改失败]->[%v]", req)
 		return
 	}
 	rsp = result.NewSuccess("修改成功")
@@ -110,6 +118,7 @@ func (bp *BusinessPartners) FrontListBusinessPartners(ctx *fasthttp.RequestCtx, 
 	bps, total, err := service.BusinessPartnersSrv.FrontListBusinessPartners(req)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("FrontListBusinessPartners->[%v]", err)
 		return
 	}
 	iBps := make([]*entity.IndexBusinessPartners, total)
@@ -126,7 +135,7 @@ func (bp *BusinessPartners) FrontListBusinessPartners(ctx *fasthttp.RequestCtx, 
 				PageIndex: req.Page.PageIndex,
 				Total:     total,
 			},
-			Bps:iBps,
+			Bps: iBps,
 		})
 	return
 }

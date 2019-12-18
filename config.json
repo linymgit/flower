@@ -12,9 +12,9 @@
     "jwt_expired_min": 1200
   },
   "qn_config": {
-    "access_key": "aYpbxU9ziIThJUlbrf5M0-w61ouCi38yFiCcEhzH",
-    "secret_key": "SkI35ZbYlq87xUvQyzDCpofj4HjRzCJbzlBb4M33",
-    "bucket": "picture"
+    "access_key": "6jMAoQ6FGyllz4ED1gX-1cXJaD53rYmGqLAoS9BV",
+    "secret_key": "jJZAMO9ul5JQYsoQYjZtwTq44A0T02BCaHyAkL3A",
+    "bucket": "luckyagr"
   },
   "mysql_config": {
     "conn_url": "root:linym6303763!@tcp(123.207.1.119:3306)/flower?charset=utf8mb4",
@@ -22,5 +22,9 @@
     "conn_max_lifetime": 60,
     "max_idle_conns": 500,
     "max_open_conns": 1000
+  },
+  "log_config": {
+    "log_path": "F:\\log\\flower",
+    "log_prefix": ""
   }
 }

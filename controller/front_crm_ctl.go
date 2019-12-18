@@ -4,6 +4,7 @@ import (
 	"flower/captcha"
 	"flower/entity"
 	"flower/http"
+	"flower/log"
 	"flower/result"
 	"flower/router"
 	"flower/service"
@@ -28,15 +29,18 @@ func (fC *FrontCrm) InsertCrm(ctx *fasthttp.RequestCtx, req *entity.AddCrmReq) (
 	verifyResult := captcha.VerifyCaptcha(req.Id, req.VerifyValue)
 	if !verifyResult {
 		rsp = result.CaptchaError
+		log.WarnF("InsertCrm -> [%s]", rsp.Msg)
 		return
 	}
 	ok, err := service.CrmSrv.InsertCrm(req)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("InsertCrm->service.CrmSrv.InsertCrm(req)->[%v]", err)
 		return
 	}
 	if !ok {
 		rsp = result.NewError(result.RequestParamEc, "插入失败检查参数")
+		log.WarnF("InsertCrm->[插入失败检查参数]->[%v]", req)
 		return
 	}
 	rsp = result.NewSuccess("提交成功")

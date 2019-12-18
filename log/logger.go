@@ -1,14 +1,13 @@
 package log
 
 import (
+	"flower/config"
 	goLog "log"
 	"os"
 	"path/filepath"
 	"time"
 )
 
-const logPrefix = ""
-const logPath = "G:\\log\\flower"
 const infoLogFileName = "info_20060102150405.log"
 const warnLogFileName = "warn_20060102150405.log"
 const errorLogFileName = "error_20060102150405.log"
@@ -18,10 +17,12 @@ var warnLogger *goLog.Logger
 var errorLogger *goLog.Logger
 
 // 初始化log
-func init() {
+func Init() {
+	logPath := config.Conf.LogConfig.LogPath
+	logPrefix := config.Conf.LogConfig.LogPrefix
 	err := os.MkdirAll(logPath, os.ModePerm)
 	if err != nil {
-		goLog.Fatalf("mk log dir error[%v]", err)
+		goLog.Fatalf("mk log dir that %s error[%v]", logPath, err)
 	}
 
 	infoPath := filepath.Join(logPath, time.Now().Format(infoLogFileName))

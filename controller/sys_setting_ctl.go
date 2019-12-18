@@ -4,6 +4,7 @@ import (
 	"flower/entity"
 	"flower/handler"
 	"flower/http"
+	"flower/log"
 	"flower/result"
 	"flower/router"
 	"flower/service"
@@ -43,10 +44,12 @@ func (ss *SysSetting) NewSetting(ctx *fasthttp.RequestCtx, req *entity.SystemSet
 	isExist, ok, err := service.SysSrv.InsertSystemSetting(req)
 	if err != nil {
 		rsp = result.DatabaseError
+		log.ErrorF("NewSetting->[%v]", err)
 		return
 	}
 	if isExist {
 		rsp = result.NewError(result.ParamEc, "网站设置不可以重复插入")
+		log.WarnF("NewSetting->[网站设置不可以重复插入]")
 		return
 	}
 	if ok {
@@ -61,6 +64,7 @@ func (ss *SysSetting) NewSetting(ctx *fasthttp.RequestCtx, req *entity.SystemSet
 func (ss *SysSetting) ModifySetting(ctx *fasthttp.RequestCtx, req *entity.SystemSettingReq) (rsp *result.Result) {
 	ok, err := service.SysSrv.UpdateSystemSetting(req)
 	if err != nil {
+		log.ErrorF("ModifySetting->[%v]", err)
 		return
 	}
 	if ok {
@@ -75,10 +79,11 @@ func (ss *SysSetting) ModifySetting(ctx *fasthttp.RequestCtx, req *entity.System
 func (ss *SysSetting) GetSetting(ctx *fasthttp.RequestCtx) (rsp *result.Result) {
 	ok, webSetting, err := service.SysSrv.SelectSystemSetting()
 	if err != nil {
+		log.ErrorF("GetSetting->[%v]", err)
 		return
 	}
 	if ok {
-		rsp = result.NewSuccess(&entity.GetSystemSettingRsp{Setting:webSetting})
+		rsp = result.NewSuccess(&entity.GetSystemSettingRsp{Setting: webSetting})
 		return
 	}
 	rsp = result.NewError(result.UnKnowEc, "")

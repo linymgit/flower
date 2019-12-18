@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"flower/config"
+	"flower/log"
 	_ "github.com/go-sql-driver/mysql"
 	"time"
 	"xorm.io/xorm"
@@ -16,10 +17,11 @@ func Init(dbUrl string) (err error) {
 	Db.SetMaxIdleConns(config.Conf.MysqlConfig.MaxIdleConns)
 	Db.SetMaxOpenConns(config.Conf.MysqlConfig.MaxOpenConns)
 	if err != nil {
-		// TODO
+		log.ErrorF("Init(dbUrl string) -> [%v]", err)
+		return
 	}
 	if err = Db.Ping(); err != nil {
-		// TODO
+		log.ErrorF("Init(dbUrl string)-> Db.Ping() -> [%v]", err)
 		return
 	}
 	return

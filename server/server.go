@@ -2,10 +2,10 @@ package server
 
 import (
 	"flower/config"
+	"flower/log"
 	"flower/router"
 	"fmt"
 	"github.com/valyala/fasthttp"
-	"log"
 )
 
 type Server struct {
@@ -45,10 +45,10 @@ func (s *Server) Start() {
 	}
 
 	fmt.Printf("starting flower server on %d...", config.Conf.ServerPort)
+	log.InfoF("starting flower server on %d...", config.Conf.ServerPort)
 	err := s.server.ListenAndServe(fmt.Sprintf(":%d", s.Port))
 	if err != nil {
-		// TODO
-		log.Fatalf("start server error " + err.Error())
+		log.ErrorF("start server error[%v]", err)
 	}
 
 }

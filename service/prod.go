@@ -21,9 +21,9 @@ func (p *ProdService) ListProductCategory(query *entity.ListProductCategoryReq) 
 	defer session.Close()
 	cond := builder.NewCond()
 	if query.Id > 0 {
-		cond = cond.And(builder.Eq{"id":query.Id})
-	}else{
-		cond = cond.And(builder.Eq{"parent_id":query.ParentId})
+		cond = cond.And(builder.Eq{"id": query.Id})
+	} else {
+		cond = cond.And(builder.Eq{"parent_id": query.ParentId})
 	}
 	if query.Page == nil {
 		err = session.Where(cond).Asc("sort").Find(&pcs)
