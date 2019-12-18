@@ -118,6 +118,7 @@ func (p *ProdService) NewProductCategory(query *entity.NewProdCategoryReq) (isEx
 		ParentId: query.ParentId,
 		Name:     query.Name,
 		Desc:     query.Desc,
+		States:   state.ProdCategoryShow,
 		Level:    level,
 		Sort:     query.Sort,
 	})
