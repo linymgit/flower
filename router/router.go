@@ -33,6 +33,9 @@ func AddRoute(path string, mothodType http.MothodType, handlerFunc interface{}, 
 		// 跨域处理
 		httpHandler = handler.CROS(httpHandler)
 
+		//访问统计
+		httpHandler = handler.AccessLog(httpHandler)
+
 		// 路由注册
 		if mothodType == http.GET {
 			router.GET(path, httpHandler)

@@ -11,10 +11,12 @@ import (
 const infoLogFileName = "info_20060102150405.log"
 const warnLogFileName = "warn_20060102150405.log"
 const errorLogFileName = "error_20060102150405.log"
+const accessLogFileName = "access_20060102150405.log"
 
 var infoLogger *goLog.Logger
 var warnLogger *goLog.Logger
 var errorLogger *goLog.Logger
+var accessLogger *goLog.Logger
 
 // 初始化log
 func Init() {
@@ -46,6 +48,13 @@ func Init() {
 	}
 	errorLogger = goLog.New(file, logPrefix, goLog.Ldate|goLog.Ltime)
 
+	accessLogPath := filepath.Join(logPath, time.Now().Format(accessLogFileName))
+	file, err = os.Create(accessLogPath)
+	if err != nil {
+		goLog.Fatalf("create log file error[%v]", err)
+	}
+	accessLogger = goLog.New(file, logPrefix, goLog.Ldate|goLog.Ltime)
+
 }
 
 func InfoF(format string, v ...interface{}) {
@@ -58,4 +67,8 @@ func WarnF(format string, v ...interface{}) {
 
 func ErrorF(format string, v ...interface{}) {
 	errorLogger.Printf(format, v)
+}
+
+func AccessF(info string)  {
+	accessLogger.Print(info)
 }
