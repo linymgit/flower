@@ -60,7 +60,7 @@ type NewProductReq struct {
 	Intro   string `json:"intro" validate:"required"`
 	Summary string `json:"summary" validate:"required"`
 	//States        int    `json:"states"`
-	IndexShow     int    `json:"index_show" validate:"required"`
+	IndexShow     int    `json:"index_show"`
 	DetailsPicUrl string `json:"details_pic_url" validate:"required"`
 	CoverUrl      string `json:"cover_url" validate:"required"`
 	Price         string `json:"price"validate:"required"`
