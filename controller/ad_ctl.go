@@ -114,9 +114,7 @@ func (ad *Ad) ModifyAd(ctx *fasthttp.RequestCtx, req *entity.ModifyAdReq) (rsp *
 		return
 	}
 	if !ok {
-		rsp = result.NewError(result.RequestParamEc, "无修改数据或者广告id不存在")
 		log.WarnF("ModifyAd->无修改数据或者广告id不存在->[%v]", req)
-		return
 	}
 	rsp = result.NewSuccess("修改成功")
 	return
